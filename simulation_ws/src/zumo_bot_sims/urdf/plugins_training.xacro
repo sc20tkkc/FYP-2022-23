@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+<robot name="plugins" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Skid Drive Controller -->
+ <gazebo>
+  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+    <leftFrontJoint>left_front_joint</leftFrontJoint>
+    <rightFrontJoint>right_front_joint</rightFrontJoint>
+    <leftRearJoint>left_back_joint</leftRearJoint>
+    <rightRearJoint>right_back_joint</rightRearJoint>
+    <wheelSeparation>0.04</wheelSeparation>
+    <wheelDiameter>0.035</wheelDiameter>
+    <robotBaseFrame>body</robotBaseFrame>
+    <torque>20</torque>
+    <topicName>cmd_vel</topicName>
+    <broadcastTF>false</broadcastTF>
+  </plugin>
+ </gazebo>
+
+    <!-- IR Sensor: Range Sensor -->
+    <xacro:property name="range_sensor_fov" value="${50*pi/180}"/>
+    <xacro:property name="range_sensor_update_rate" value="50"/>
+    <xacro:property name="range_sensor_max_range" value="0.35"/>
+
+    <gazebo reference="ir_front_left_link">
+        <selfCollide>0</selfCollide>        
+        <sensor type="gpu_ray" name="RangeSensor_front_left">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+           <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>-0.4363325</min_angle>
+                        <max_angle>0.4363325</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>0</min_angle>
+                        <max_angle>0.1</max_angle> 
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.3</max>
+                    <resolution>0.02</resolution>
+                </range>
+            </ray>
+            <plugin filename="libgazebo_ros_gpu_laser.so" name="gazebo_ros_laser_front_left">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>50</updateRate>
+ -->                <topicName>prox/front_left_range_sensor</topicName>
+                <frameName>ir_front_left_link</frameName>
+                <radiation>INFRARED</radiation>
+                <visualize>true</visualize>
+                <fov>0.872665</fov>
+            </plugin>
+        </sensor>  
+    </gazebo>
+
+    <gazebo reference="ir_front_right_link">
+        <selfCollide>0</selfCollide>        
+        <sensor type="gpu_ray" name="RangeSensor_front_right">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+<!--             <update_rate>50</update_rate>
+ -->            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>-0.4363325</min_angle>
+                        <max_angle>0.4363325</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>0</min_angle>
+                        <max_angle>0.1</max_angle> 
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.3</max>
+                    <resolution>0.02</resolution>
+                </range>
+            </ray>
+            <plugin filename="libgazebo_ros_gpu_laser.so" name="gazebo_ros_laser_front_right">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>50</updateRate>
+ -->                <topicName>prox/front_right_range_sensor</topicName>
+                <frameName>ir_front_right_link</frameName>
+                <radiation>INFRARED</radiation>
+                <visualize>true</visualize>
+                <fov>0.872665</fov>
+            </plugin>
+        </sensor>  
+    </gazebo>
+
+    <gazebo reference="ir_left_link">
+        <selfCollide>0</selfCollide>        
+        <sensor type="gpu_ray" name="RangeSensor_left">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+<!--             <update_rate>50</update_rate>
+ -->            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>-0.4363325</min_angle>
+                        <max_angle>0.4363325</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>0</min_angle>
+                        <max_angle>0.1</max_angle> 
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.3</max>
+                    <resolution>0.02</resolution>
+                </range>
+            </ray>
+            <plugin filename="libgazebo_ros_gpu_laser.so" name="gazebo_ros_laser_left">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>50</updateRate>
+ -->                <topicName>prox/left_range_sensor</topicName>
+                <frameName>ir_left_link</frameName>
+                <radiation>INFRARED</radiation>
+                <visualize>true</visualize>
+                <fov>0.872665</fov>
+            </plugin>
+        </sensor>  
+    </gazebo>
+
+    <gazebo reference="ir_right_link">
+        <selfCollide>0</selfCollide>        
+        <sensor type="gpu_ray" name="RangeSensor_right">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+<!--             <update_rate>50</update_rate>
+ -->            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>-0.4363325</min_angle>
+                        <max_angle>0.4363325</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>10</samples>
+                        <resolution>1</resolution> 
+                        <min_angle>0</min_angle>
+                        <max_angle>0.1</max_angle> 
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.01</min>
+                    <max>0.3</max>
+                    <resolution>0.02</resolution>
+                </range>
+            </ray>
+            <plugin filename="libgazebo_ros_gpu_laser.so" name="gazebo_ros_laser_right">
+                <gaussianNoise>0.005</gaussianNoise>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>50</updateRate>
+ -->                <topicName>prox/right_range_sensor</topicName>
+                <frameName>ir_right_link</frameName>
+                <radiation>INFRARED</radiation>
+                <visualize>true</visualize>
+                <fov>0.872665</fov>
+            </plugin>
+        </sensor>  
+    </gazebo>
+
+
+    <gazebo reference="light_ops_link">
+        <sensor name='camera' type='camera'>
+            <visualize>true</visualize>
+            <camera name='__default__'>
+                <horizontal_fov>0.1</horizontal_fov>
+                <image>
+                    <width>1</width>
+                    <height>1</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.0001</near>
+                    <far>0.5</far>
+                </clip>
+            </camera>
+
+            <plugin name="gazebo_light_sensor_plugin" filename="libgazebo_light_sensor_plugin.so">
+                <cameraName>camera</cameraName>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>100</updateRate>
+ -->
+                <imageTopicName>rgb/image_raw</imageTopicName>
+                <depthImageTopicName>depth/image_raw</depthImageTopicName>
+                <pointCloudTopicName>depth/points</pointCloudTopicName>
+                <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+                <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+
+                <frameName>light_ops_link</frameName>
+
+                <distortion_K1>0.0</distortion_K1>
+                <distortion_K2>0.0</distortion_K2>
+                <distortion_K3>0.0</distortion_K3>
+                <distortion_T1>0.0</distortion_T1>
+                <distortion_T2>0.0</distortion_T2>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+     <gazebo reference="light_right_ops_link">
+        <sensor name='camera_right' type='camera'>
+            <visualize>true</visualize>
+            <camera name='__default__'>
+                <horizontal_fov>0.1</horizontal_fov>
+                <image>
+                    <width>1</width>
+                    <height>1</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.0001</near>
+                    <far>0.5</far>
+                </clip>
+            </camera>
+
+            <plugin name="gazebo_light_sensor_plugin" filename="libgazebo_light_sensor_plugin.so">
+                <cameraName>camera_right</cameraName>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>100</updateRate>
+ -->
+                <imageTopicName>rgb/image_raw</imageTopicName>
+                <depthImageTopicName>depth/image_raw</depthImageTopicName>
+                <pointCloudTopicName>depth/points</pointCloudTopicName>
+                <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+                <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+
+                <frameName>light_right_ops_link</frameName>
+
+                <distortion_K1>0.0</distortion_K1>
+                <distortion_K2>0.0</distortion_K2>
+                <distortion_K3>0.0</distortion_K3>
+                <distortion_T1>0.0</distortion_T1>
+                <distortion_T2>0.0</distortion_T2>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+     <gazebo reference="light_left_ops_link">
+        <sensor name='camera_left' type='camera'>
+            <visualize>true</visualize>
+            <camera name='__default__'>
+                <horizontal_fov>0.1</horizontal_fov>
+                <image>
+                    <width>1</width>
+                    <height>1</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.0001</near>
+                    <far>0.5</far>
+                </clip>
+            </camera>
+
+            <plugin name="gazebo_light_sensor_plugin" filename="libgazebo_light_sensor_plugin.so">
+                <cameraName>camera_left</cameraName>
+                <alwaysOn>true</alwaysOn>
+<!--                 <updateRate>100</updateRate>
+ -->
+                <imageTopicName>rgb/image_raw</imageTopicName>
+                <depthImageTopicName>depth/image_raw</depthImageTopicName>
+                <pointCloudTopicName>depth/points</pointCloudTopicName>
+                <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+                <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+
+                <frameName>light_left_ops_link</frameName>
+
+                <distortion_K1>0.0</distortion_K1>
+                <distortion_K2>0.0</distortion_K2>
+                <distortion_K3>0.0</distortion_K3>
+                <distortion_T1>0.0</distortion_T1>
+                <distortion_T2>0.0</distortion_T2>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+</robot>

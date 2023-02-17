@@ -1,0 +1,415 @@
+<?xml version="1.0"?>
+<robot name="sumo" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find zumo_bot_sims)/urdf/plugins_training.xacro"/>
+
+    <link name="body">
+        <static>true</static>
+        <pose> 0 0 0 0 0 0 </pose>
+        <inertial>
+            <mass value = "1"/>  
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia ixx="0.002089" iyy="0.00581" izz="0.0006625" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+
+        <collision name="collision_body">
+            <geometry>
+                <box size="0.066 0.082 0.025"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.066 0.082 0.025"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="bumper_link">
+        <inertial>
+            <mass value = "50"/> 
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia ixx="0.035401" iyy="0.0003525" izz="0.0045025" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0.191986 0 0 "/>
+            <geometry>
+                <box size="0.098 0.001 0.041"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0.191986 0 0"/>
+            <geometry>
+                <box size="0.098 0.001 0.041"/>
+            </geometry>
+        </collision>
+        
+    </link>
+
+    <joint name="bumper_joint" type="fixed">
+        <parent link="body"/>
+        <child link="bumper_link"/>
+        <origin xyz="0 0.042 0.015" rpy="0 0 0"/>
+    </joint>
+
+    <link name="back_bumper_link">
+        <inertial>
+            <mass value = "18"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia ixx="0.010401" iyy="0.0001025" izz="0.00182025" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+        
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.098 0.001 0.041"/>
+            </geometry>
+        </collision>
+        
+    </link>
+
+    <joint name="back_bumper_joint" type="fixed">
+        <parent link="body"/>
+        <child link="back_bumper_link"/>
+        <origin xyz="0 -0.042 0.01" rpy="0 0 0"/>
+    </joint>
+
+    <link name="right_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu1>25</mu1>
+                        <mu2>25</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>0.01</min_depth>
+                    </ode>
+                    <kp>1000000.0</kp>
+                    <kd>1.0</kd>
+                </contact>
+            </surface>
+        </collision>
+
+        <inertial>
+            <mass value="9"/>
+            <inertia ixx="0.0027" iyy="0.00027" izz="0.00027" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="right_front_joint" type="continuous">
+        <parent link="body"/>
+        <child link="right_front_link"/>
+        <origin xyz="0.042 0.02 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="right_back_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+            
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu1>25</mu1>
+                        <mu2>25</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>0.01</min_depth>
+                    </ode>
+                    <kp>1000000.0</kp>
+                    <kd>1.0</kd>
+                </contact>
+            </surface>
+        </collision>
+
+        <inertial>
+            <mass value="9"/>
+            <inertia ixx="0.0027" iyy="0.00027" izz="0.00027" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="right_back_joint" type="continuous">
+        <parent link="body"/>
+        <child link="right_back_link"/>
+        <origin xyz="0.042 -0.02 0" rpy="0 0 0"/>
+    </joint>
+
+
+    <link name="left_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu1>25</mu1>
+                        <mu2>25</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>0.01</min_depth>
+                    </ode>
+                    <kp>1000000.0</kp>
+                    <kd>1.0</kd>
+                </contact>
+            </surface>
+        </collision>
+
+        <inertial>
+            <mass value="9"/>
+            <inertia ixx="0.0027" iyy="0.00027" izz="0.00027" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="left_front_joint" type="continuous">
+        <parent link="body"/>
+        <child link="left_front_link"/>
+        <origin xyz="-0.042 0.02 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="left_back_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="file:///home\takofish\FYP-2022-23\simulation_ws\src\zumo_bot_sims\urdf\meshes/wheel.dae"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                        <mu>25</mu>
+                        <mu2>25</mu2>
+                    </ode>
+                </friction>
+                <contact>
+                    <ode>
+                        <min_depth>0.01</min_depth>
+                    </ode>
+                    <kp>1000000.0</kp>
+                    <kd>1.0</kd>
+                </contact>
+            </surface>
+        </collision>
+
+        <inertial>
+            <mass value="9"/>
+            <inertia ixx="0.0027" iyy="0.00027" izz="0.00027" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="left_back_joint" type="continuous">
+        <parent link="body"/>
+        <child link="left_back_link"/>
+        <origin xyz="-0.042 -0.02 0" rpy="0 0 0"/>
+    </joint>
+
+  <!-- Gazebo ros plugin -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        </plugin>
+    </gazebo>
+
+  <!-- transmission -->
+    <transmission name="right_front_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="motor1">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+        <joint name="right_front_joint">
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>        
+    </transmission>
+
+    <transmission name="right_back_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="motor2">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+        <joint name="right_back_joint">
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+    </transmission>
+
+    <transmission name="left_front_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="motor3">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+        <joint name="left_front_joint">
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+    </transmission>
+    <transmission name="left_back_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="motor4">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+        <joint name="left_back_joint">
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+    </transmission>
+
+    <!-- prox sensor -->
+    <link name="ir_front_left_link">
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+      
+    </link>
+
+    <joint name="ir_front_left_joint" type="fixed">
+        <parent link="bumper_link"/>
+        <child link="ir_front_left_link"/>
+        <origin xyz="-0.0365 -0.008 0" rpy="0 0 ${pi/2}"/>
+    </joint>
+
+    <link name="ir_front_right_link">
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="ir_front_right_joint" type="fixed">
+        <parent link="bumper_link"/>
+        <child link="ir_front_right_link"/>
+        <origin xyz="0.0365 -0.008 0" rpy="0 0 ${pi/2}"/>
+    </joint>
+
+    <link name="ir_right_link">
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="ir_right_joint" type="fixed">
+        <parent link="body"/>
+        <child link="ir_right_link"/>
+        <origin xyz="0.041 0 0" rpy="0 0 0"/>
+    </joint>
+
+
+    <link name="ir_left_link">
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="ir_left_joint" type="fixed">
+        <parent link="body"/>
+        <child link="ir_left_link"/>
+        <origin xyz="-0.041 0 0" rpy="0 0 ${pi}"/>
+    </joint>
+
+<!-- line sensor -->
+    <link name="light_link"/>
+
+    <joint name="light_joint" type="fixed">
+        <parent link="body"/>
+        <child link="light_link"/>
+        <origin xyz="0 0.055 -0.013" rpy="0 0 0"/>
+    </joint>
+
+    <link name="light_ops_link"/>
+
+    <joint name="light_ops_joint" type="fixed">
+        <parent link="light_link"/>
+        <child link="light_ops_link"/>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}"/>
+    </joint>
+
+
+
+    <link name="light_left_link"/>
+
+    <joint name="light_left_joint" type="fixed">
+        <parent link="body"/>
+        <child link="light_left_link"/>
+        <origin xyz="-0.03 0.055 -0.013" rpy="0 0 0"/>
+    </joint>
+
+    <link name="light_left_ops_link"/>
+
+    <joint name="light_left_ops_joint" type="fixed">
+        <parent link="light_left_link"/>
+        <child link="light_left_ops_link"/>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}"/>
+    </joint>
+
+
+
+    <link name="light_right_link"/>
+
+    <joint name="light_right_joint" type="fixed">
+        <parent link="body"/>
+        <child link="light_right_link"/>
+        <origin xyz="0.03 0.055 -0.013" rpy="0 0 0"/>
+    </joint>
+
+    <link name="light_right_ops_link"/>
+
+    <joint name="light_right_ops_joint" type="fixed">
+        <parent link="light_right_link"/>
+        <child link="light_right_ops_link"/>
+        <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}"/>
+    </joint>
+</robot>

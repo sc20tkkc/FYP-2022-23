@@ -15,9 +15,12 @@ set(CMAKE_MAKEFILE_DEPENDS
   "catkin_generated/order_packages.cmake"
   "gazebo_light_sensor_plugin/catkin_generated/ordered_paths.cmake"
   "gazebo_light_sensor_plugin/catkin_generated/package.cmake"
+  "zumo_bot_sims/catkin_generated/package.cmake"
   "/home/takofish/FYP-2022-23/simulation_ws/src/CMakeLists.txt"
   "/home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/CMakeLists.txt"
   "/home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/package.xml"
+  "/home/takofish/FYP-2022-23/simulation_ws/src/zumo_bot_sims/CMakeLists.txt"
+  "/home/takofish/FYP-2022-23/simulation_ws/src/zumo_bot_sims/package.xml"
   "/opt/ros/noetic/share/actionlib/cmake/actionlib-msg-extras.cmake"
   "/opt/ros/noetic/share/actionlib/cmake/actionlibConfig-version.cmake"
   "/opt/ros/noetic/share/actionlib/cmake/actionlibConfig.cmake"
@@ -417,6 +420,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "gtest/googlemock/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gtest/googletest/CMakeFiles/CMakeDirectoryInformation.cmake"
   "gazebo_light_sensor_plugin/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "zumo_bot_sims/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:

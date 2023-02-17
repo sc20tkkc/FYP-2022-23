@@ -7,4 +7,5 @@
 # new environment variables
 
 # modified environment variables
+export PKG_CONFIG_PATH="/home/takofish/FYP-2022-23/simulation_ws/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/takofish/FYP-2022-23/simulation_ws/build'

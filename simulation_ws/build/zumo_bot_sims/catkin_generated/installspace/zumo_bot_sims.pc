@@ -1,0 +1,8 @@
+prefix=/home/takofish/FYP-2022-23/simulation_ws/install
+
+Name: zumo_bot_sims
+Description: Description of zumo_bot_sims
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

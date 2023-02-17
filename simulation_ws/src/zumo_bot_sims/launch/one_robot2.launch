@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <arg name="robot_name"/>
+    <arg name="init_pose"/>
+
+    <node name="spawn_zumo_bot" pkg="gazebo_ros" type="spawn_model"
+            args=" $(arg init_pose) -param /robot_description
+                -urdf -model $(arg robot_name))" />
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+    <!-- <node pkg="sumo_training" name="robo_move" type="robot2.py" output="screen"/>  -->
+</launch>

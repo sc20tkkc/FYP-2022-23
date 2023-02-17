@@ -132,3 +132,10 @@
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/nav_msgs_generate_messages_lisp.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/install/strip.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/install/local.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/install.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/list_install_components.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/rebuild_cache.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/edit_cache.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/zumo_bot_sims/CMakeFiles/test.dir
