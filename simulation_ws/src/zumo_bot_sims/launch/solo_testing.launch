@@ -8,4 +8,7 @@
   </include>
 
   <arg name = "gui" value="false"/>
+
+<!-- Load in robots -->
+  <include file="$(find zumo_bot_sims)/launch/robot_training.launch"/>
 </launch>

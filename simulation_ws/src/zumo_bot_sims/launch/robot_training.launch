@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find zumo_bot_sims)/urdf/robot_training.urdf'"/>
+
+  <group ns="robot1">
+    <arg name="namespace" value="robot1"/>
+    <param name="tf_prefix" value="robot1_tf" />
+    <include file="$(find zumo_bot_sims)/launch/one.launch" >
+      <arg name="init_pose" value="-x 0.078 -y -0.0507 -z 0.04 -R 0.0 -P 0.0 -Y 1.075" /> 
+      <arg name="robot_name"  value="Robot1" />
+    </include>
+
+  </group>
+</launch>
