@@ -48,6 +48,7 @@
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/list_install_components.dir
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/rebuild_cache.dir
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/test.dir
+/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_py.dir
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir
 /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_lisp.dir

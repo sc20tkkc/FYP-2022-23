@@ -3,6 +3,6 @@ prefix=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel
 Name: gazebo_light_sensor_plugin
 Description: Description of gazebo_light_sensor_plugin
 Version: 0.0.0
-Cflags: 
+Cflags: -I/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/include
 Libs: -L${prefix}/lib 
-Requires: 
+Requires: gazebo_plugins gazebo_ros roscpp

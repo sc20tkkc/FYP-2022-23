@@ -168,6 +168,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/rule:
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/rule
+.PHONY : gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/rule
+
+# Convenience name for target.
+gazebo_light_sensor_plugin: gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/rule
+
+.PHONY : gazebo_light_sensor_plugin
+
+# fast build rule for target.
+gazebo_light_sensor_plugin/fast:
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build
+.PHONY : gazebo_light_sensor_plugin/fast
+
+# Convenience name for target.
 gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule:
 	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
 .PHONY : gazebo_light_sensor_plugin/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
@@ -1487,6 +1502,33 @@ actionlib_msgs_generate_messages_cpp/fast:
 	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/build
 .PHONY : actionlib_msgs_generate_messages_cpp/fast
 
+src/light_sensor_plugin.o: src/light_sensor_plugin.cpp.o
+
+.PHONY : src/light_sensor_plugin.o
+
+# target to build an object file
+src/light_sensor_plugin.cpp.o:
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.o
+.PHONY : src/light_sensor_plugin.cpp.o
+
+src/light_sensor_plugin.i: src/light_sensor_plugin.cpp.i
+
+.PHONY : src/light_sensor_plugin.i
+
+# target to preprocess a source file
+src/light_sensor_plugin.cpp.i:
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.i
+.PHONY : src/light_sensor_plugin.cpp.i
+
+src/light_sensor_plugin.s: src/light_sensor_plugin.cpp.s
+
+.PHONY : src/light_sensor_plugin.s
+
+# target to generate assembly for a file
+src/light_sensor_plugin.cpp.s:
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.s
+.PHONY : src/light_sensor_plugin.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1498,6 +1540,7 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... gazebo_light_sensor_plugin"
 	@echo "... visualization_msgs_generate_messages_py"
 	@echo "... visualization_msgs_generate_messages_nodejs"
 	@echo "... visualization_msgs_generate_messages_lisp"
@@ -1588,6 +1631,9 @@ help:
 	@echo "... actionlib_msgs_generate_messages_lisp"
 	@echo "... nav_msgs_generate_messages_lisp"
 	@echo "... actionlib_msgs_generate_messages_cpp"
+	@echo "... src/light_sensor_plugin.o"
+	@echo "... src/light_sensor_plugin.i"
+	@echo "... src/light_sensor_plugin.s"
 .PHONY : help
 
 

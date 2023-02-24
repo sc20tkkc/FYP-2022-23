@@ -298,6 +298,19 @@ _catkin_empty_exported_target/fast:
 .PHONY : _catkin_empty_exported_target/fast
 
 #=============================================================================
+# Target rules for targets named gazebo_light_sensor_plugin
+
+# Build rule for target.
+gazebo_light_sensor_plugin: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gazebo_light_sensor_plugin
+.PHONY : gazebo_light_sensor_plugin
+
+# fast build rule for target.
+gazebo_light_sensor_plugin/fast:
+	$(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build
+.PHONY : gazebo_light_sensor_plugin/fast
+
+#=============================================================================
 # Target rules for targets named visualization_msgs_generate_messages_py
 
 # Build rule for target.
@@ -1464,6 +1477,7 @@ help:
 	@echo "... gtest_main"
 	@echo "... gtest"
 	@echo "... _catkin_empty_exported_target"
+	@echo "... gazebo_light_sensor_plugin"
 	@echo "... visualization_msgs_generate_messages_py"
 	@echo "... visualization_msgs_generate_messages_nodejs"
 	@echo "... visualization_msgs_generate_messages_lisp"

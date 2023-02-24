@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "gazebo_light_sensor_plugin")
 set(gazebo_light_sensor_plugin_VERSION "0.0.0")
-set(gazebo_light_sensor_plugin_MAINTAINER "sc20tkkc <sc20tkkc@todo.todo>")
+set(gazebo_light_sensor_plugin_MAINTAINER "takofish <takofish@todo.todo>")
 set(gazebo_light_sensor_plugin_PACKAGE_FORMAT "2")
 set(gazebo_light_sensor_plugin_BUILD_DEPENDS "gazebo_plugins" "gazebo_ros" "roscpp")
 set(gazebo_light_sensor_plugin_BUILD_EXPORT_DEPENDS "gazebo_plugins" "gazebo_ros" "roscpp")
