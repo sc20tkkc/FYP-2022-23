@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/takofish/FYP-2022-23/simulation_ws/src
+CMAKE_SOURCE_DIR = /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/takofish/FYP-2022-23/simulation_ws/build
+CMAKE_BINARY_DIR = /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build
 
 # Utility rule file for actionlib_msgs_generate_messages_eus.
 
@@ -63,10 +63,10 @@ gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/b
 .PHONY : gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/build
 
 gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/clean:
-	cd /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin && $(CMAKE_COMMAND) -P CMakeFiles/actionlib_msgs_generate_messages_eus.dir/cmake_clean.cmake
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin && $(CMAKE_COMMAND) -P CMakeFiles/actionlib_msgs_generate_messages_eus.dir/cmake_clean.cmake
 .PHONY : gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/clean
 
 gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/depend:
-	cd /home/takofish/FYP-2022-23/simulation_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/takofish/FYP-2022-23/simulation_ws/src /home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin /home/takofish/FYP-2022-23/simulation_ws/build /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : gazebo_light_sensor_plugin/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/depend
 

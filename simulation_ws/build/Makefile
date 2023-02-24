@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/takofish/FYP-2022-23/simulation_ws/src
+CMAKE_SOURCE_DIR = /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/takofish/FYP-2022-23/simulation_ws/build
+CMAKE_BINARY_DIR = /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,9 +137,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles /home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/CMakeFiles /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -296,19 +296,6 @@ _catkin_empty_exported_target: cmake_check_build_system
 _catkin_empty_exported_target/fast:
 	$(MAKE) -f search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build.make search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build
 .PHONY : _catkin_empty_exported_target/fast
-
-#=============================================================================
-# Target rules for targets named gazebo_light_sensor_plugin
-
-# Build rule for target.
-gazebo_light_sensor_plugin: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 gazebo_light_sensor_plugin
-.PHONY : gazebo_light_sensor_plugin
-
-# fast build rule for target.
-gazebo_light_sensor_plugin/fast:
-	$(MAKE) -f gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build.make gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/build
-.PHONY : gazebo_light_sensor_plugin/fast
 
 #=============================================================================
 # Target rules for targets named visualization_msgs_generate_messages_py
@@ -1477,7 +1464,6 @@ help:
 	@echo "... gtest_main"
 	@echo "... gtest"
 	@echo "... _catkin_empty_exported_target"
-	@echo "... gazebo_light_sensor_plugin"
 	@echo "... visualization_msgs_generate_messages_py"
 	@echo "... visualization_msgs_generate_messages_nodejs"
 	@echo "... visualization_msgs_generate_messages_lisp"

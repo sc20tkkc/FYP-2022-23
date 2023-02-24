@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "search_strategies")
 set(search_strategies_VERSION "0.0.0")
-set(search_strategies_MAINTAINER "takofish <takofish@todo.todo>")
+set(search_strategies_MAINTAINER "sc20tkkc <sc20tkkc@todo.todo>")
 set(search_strategies_PACKAGE_FORMAT "2")
 set(search_strategies_BUILD_DEPENDS "rospy")
 set(search_strategies_BUILD_EXPORT_DEPENDS "rospy")
