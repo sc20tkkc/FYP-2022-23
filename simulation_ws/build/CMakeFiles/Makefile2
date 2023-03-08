@@ -55,6 +55,7 @@ CMAKE_BINARY_DIR = /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build
 # The main recursive "all" target.
 all: gtest/all
 all: search_strategies/all
+all: training_sim/all
 all: gazebo_light_sensor_plugin/all
 all: zumo_bot_sims/all
 
@@ -63,6 +64,7 @@ all: zumo_bot_sims/all
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
 preinstall: search_strategies/preinstall
+preinstall: training_sim/preinstall
 preinstall: gazebo_light_sensor_plugin/preinstall
 preinstall: zumo_bot_sims/preinstall
 
@@ -76,6 +78,7 @@ clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
 clean: search_strategies/clean
+clean: training_sim/clean
 clean: gazebo_light_sensor_plugin/clean
 clean: zumo_bot_sims/clean
 
@@ -261,6 +264,24 @@ search_strategies/preinstall:
 search_strategies/clean: search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/clean
 
 .PHONY : search_strategies/clean
+
+#=============================================================================
+# Directory level rules for directory training_sim
+
+# Recursive "all" directory target.
+training_sim/all:
+
+.PHONY : training_sim/all
+
+# Recursive "preinstall" directory target.
+training_sim/preinstall:
+
+.PHONY : training_sim/preinstall
+
+# Recursive "clean" directory target.
+training_sim/clean:
+
+.PHONY : training_sim/clean
 
 #=============================================================================
 # Directory level rules for directory zumo_bot_sims

@@ -132,6 +132,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gtest/cmake_install.cmake")
   include("/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/search_strategies/cmake_install.cmake")
+  include("/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/training_sim/cmake_install.cmake")
   include("/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/cmake_install.cmake")
   include("/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/zumo_bot_sims/cmake_install.cmake")
 

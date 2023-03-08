@@ -1,2 +1,2 @@
-gazebo_light_sensor_plugin:search_strategies:zumo_bot_sims
+gazebo_light_sensor_plugin:search_strategies:training_sim:zumo_bot_sims
 -DCATKIN_DEVEL_PREFIX=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel -DCMAKE_INSTALL_PREFIX=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install -G Unix Makefiles
