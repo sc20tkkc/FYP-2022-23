@@ -171,7 +171,16 @@ void loop()
       }
       else
       {
-        motors.setSpeeds(turnSpeed, -turnSpeed);
+        // Randomise the direction
+        if(spinTime%2)
+        {
+          motors.setSpeeds(turnSpeed, -turnSpeed);
+        }
+        else
+        {
+          motors.setSpeeds(-turnSpeed, turnSpeed);
+        }
+
       }
       break;
     }
@@ -183,8 +192,41 @@ void loop()
         initialLoop = false;
         display.print(F("Attack"));
       }
+      
+      lineSensors.read(lineSensorValues);
+      if (lineSensorValues[0] < lineSensorThreshold 
+        || lineSensorValues[2] < lineSensorThreshold)
+      {
+        switchState(State::stateRecover);
+      }
 
-      motors.setSpeeds(0,0);
+      proxSensors.read();
+      uint8_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
+      int8_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
+      
+      if (sum >= 4 || timeInState() > stalemateTime)
+      {
+        motors.setSpeeds(rammingSpeed, rammingSpeed);
+      }
+      else if (sum == 0)
+      {
+        switchState(State::stateSearch);
+      }
+      else
+      {
+        if (diff >= 1)
+        {
+          motors.setSpeeds(veerSpeedHigh, veerSpeedLow);
+        }
+        else if (diff <= -1)
+        {
+          motors.setSpeeds(veerSpeedLow, veerSpeedHigh);
+        }
+        else
+        {
+          motors.setSpeeds(forwardSpeed, forwardSpeed);
+        }
+      }
       break;
     }
     
