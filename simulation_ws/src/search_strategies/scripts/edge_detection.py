@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# This is not really finished and somewhat abandoned used merely for testing out the robot
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan, Range, Image
@@ -7,14 +8,12 @@ from std_srvs.srv import Empty
 from math import radians
 
 def sensor_callback(image: Image):
-    rate = rospy.Rate(30)
-    turning = False
+    rate = rospy.Rate(5)
     rospy.loginfo(image.data[1])
     cmd = Twist()
     if(image.data[1] > 70):
         cmd.linear.x = 0.0
         cmd.angular.z = radians(180)
-        turning = True
     else:
         cmd.linear.x = -0.2
         cmd.angular.z = 0.0
@@ -34,5 +33,4 @@ if __name__ == "__main__":
         sub_right = rospy.Subscriber("/robot1/camera_right/rgb/image_raw", Image, callback=sensor_callback)
         rospy.spin()
     except rospy.ROSInterruptException:
-        pub
         pass

@@ -160,6 +160,7 @@ include_directories(
  catkin_install_python(PROGRAMS
    scripts/edge_detection.py
    scripts/random_search.py
+   scripts/state_machine.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
