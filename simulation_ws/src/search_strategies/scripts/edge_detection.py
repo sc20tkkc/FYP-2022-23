@@ -10,8 +10,6 @@ from math import radians
 # Line sensor class (should I seperate actuator and sensor class?)
 class LineSensor:
     def __init__(self):
-        self.recovering = False
-        
         rospy.init_node('line_sensor', anonymous=True)
         self.sub_left = rospy.Subscriber("/robot1/camera_left/rgb/image_raw", Image, callback=self.sensor_callback, queue_size=1)
         self.sub_mid = rospy.Subscriber("/robot1/camera/rgb/image_raw", Image, callback=self.sensor_callback, queue_size=1)
