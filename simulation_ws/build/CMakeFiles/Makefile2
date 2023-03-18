@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/takofish/FYP-2022-23/simulation_ws/build
 
 # The main recursive "all" target.
 all: gtest/all
-all: search_strategies/all
+all: control_system/all
 all: gazebo_light_sensor_plugin/all
 all: zumo_bot_sims/all
 
@@ -62,7 +62,7 @@ all: zumo_bot_sims/all
 
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
-preinstall: search_strategies/preinstall
+preinstall: control_system/preinstall
 preinstall: gazebo_light_sensor_plugin/preinstall
 preinstall: zumo_bot_sims/preinstall
 
@@ -75,11 +75,29 @@ clean: CMakeFiles/clean_test_results.dir/clean
 clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
-clean: search_strategies/clean
+clean: control_system/clean
 clean: gazebo_light_sensor_plugin/clean
 clean: zumo_bot_sims/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory control_system
+
+# Recursive "all" directory target.
+control_system/all:
+
+.PHONY : control_system/all
+
+# Recursive "preinstall" directory target.
+control_system/preinstall:
+
+.PHONY : control_system/preinstall
+
+# Recursive "clean" directory target.
+control_system/clean: control_system/CMakeFiles/_catkin_empty_exported_target.dir/clean
+
+.PHONY : control_system/clean
 
 #=============================================================================
 # Directory level rules for directory gazebo_light_sensor_plugin
@@ -243,24 +261,6 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest_main.dir/clean
 gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
 
 .PHONY : gtest/googletest/clean
-
-#=============================================================================
-# Directory level rules for directory search_strategies
-
-# Recursive "all" directory target.
-search_strategies/all:
-
-.PHONY : search_strategies/all
-
-# Recursive "preinstall" directory target.
-search_strategies/preinstall:
-
-.PHONY : search_strategies/preinstall
-
-# Recursive "clean" directory target.
-search_strategies/clean: search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/clean
-
-.PHONY : search_strategies/clean
 
 #=============================================================================
 # Directory level rules for directory zumo_bot_sims
@@ -525,31 +525,31 @@ gtest/googletest/CMakeFiles/gtest.dir/clean:
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/clean
 
 #=============================================================================
-# Target rules for target search_strategies/CMakeFiles/_catkin_empty_exported_target.dir
+# Target rules for target control_system/CMakeFiles/_catkin_empty_exported_target.dir
 
 # All Build rule for target.
-search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/all:
-	$(MAKE) -f search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build.make search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/depend
-	$(MAKE) -f search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build.make search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build
+control_system/CMakeFiles/_catkin_empty_exported_target.dir/all:
+	$(MAKE) -f control_system/CMakeFiles/_catkin_empty_exported_target.dir/build.make control_system/CMakeFiles/_catkin_empty_exported_target.dir/depend
+	$(MAKE) -f control_system/CMakeFiles/_catkin_empty_exported_target.dir/build.make control_system/CMakeFiles/_catkin_empty_exported_target.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles --progress-num= "Built target _catkin_empty_exported_target"
-.PHONY : search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/all
+.PHONY : control_system/CMakeFiles/_catkin_empty_exported_target.dir/all
 
 # Build rule for subdir invocation for target.
-search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/rule: cmake_check_build_system
+control_system/CMakeFiles/_catkin_empty_exported_target.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 control_system/CMakeFiles/_catkin_empty_exported_target.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/takofish/FYP-2022-23/simulation_ws/build/CMakeFiles 0
-.PHONY : search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/rule
+.PHONY : control_system/CMakeFiles/_catkin_empty_exported_target.dir/rule
 
 # Convenience name for target.
-_catkin_empty_exported_target: search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/rule
+_catkin_empty_exported_target: control_system/CMakeFiles/_catkin_empty_exported_target.dir/rule
 
 .PHONY : _catkin_empty_exported_target
 
 # clean rule for target.
-search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/clean:
-	$(MAKE) -f search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/build.make search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/clean
-.PHONY : search_strategies/CMakeFiles/_catkin_empty_exported_target.dir/clean
+control_system/CMakeFiles/_catkin_empty_exported_target.dir/clean:
+	$(MAKE) -f control_system/CMakeFiles/_catkin_empty_exported_target.dir/build.make control_system/CMakeFiles/_catkin_empty_exported_target.dir/clean
+.PHONY : control_system/CMakeFiles/_catkin_empty_exported_target.dir/clean
 
 #=============================================================================
 # Target rules for target gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir
