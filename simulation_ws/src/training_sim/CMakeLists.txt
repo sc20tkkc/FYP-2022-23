@@ -162,6 +162,7 @@ include_directories(
    scripts/gazebo_env.py
    scripts/robot2.py
    scripts/sumo_env.py
+   scripts/pygad_test.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

@@ -19,6 +19,7 @@ state_start_time = time.time()
 
 # Temporary variables used to define strcuture of state machine
 # Hard coded values used to mimic robot's behaviour 
+# May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
 threshold_line = 50
 
 # Values decided by the simulation
