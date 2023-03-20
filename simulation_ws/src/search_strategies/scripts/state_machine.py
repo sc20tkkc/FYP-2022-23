@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Reminder there is some unusual behaviour sometimes that still needs to be looked into a considered
+
 import roslib
 import rospy
 from geometry_msgs.msg import Twist
@@ -17,32 +19,40 @@ state_start_time = time.time()
 
 # Temporary variables used to define strcuture of state machine
 # Hard coded values used to mimic robot's behaviour 
-line_threshold = 1
-
-# Values 
-
-# Values that hold values of sensor readings
-line_reading = 1
-proximity_reading = 1
+threshold_line = 50
 
 # Values decided by the simulation
-proximity_lost_threshold = 1
-proximity_found_threshold = 2
+threshold_proximity_found = 1
+threshold_proximity_lost = 2
 time_stalemate = 1
-time_spin_min = 100
-time_spin_max = 1000
+time_spin_min = 1000
+time_spin_max = 2000
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
-speed_search_left.angular.z = radians(180)
+speed_search_left.angular.z = -radians(270)
 speed_search_right = Twist()
-speed_search_right.angular.z = -radians(180)
+speed_search_right.angular.z = radians(270)
 
 speed_search_drive = Twist()
 speed_search_drive.linear.x = -0.2
 
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
+
+speed_veer_left = Twist()
+speed_veer_left.linear.x = -0.2
+speed_veer_left.angular.z = -radians(180)
+speed_veer_right = Twist()
+speed_veer_right.linear.x = -0.2
+speed_veer_right.angular.z = radians(180)
+
+speed_ram = Twist()
+speed_ram.linear.x = 0.5
+
+speed_stop = Twist()
+speed_stop.linear.x = 0.0
+speed_stop.angular.z = 0.0
 
 # Predfined times that are determined by the simulation
 time_recover = 1000
@@ -93,10 +103,10 @@ class ProxSensor:
         self.val_midleft = 0
         self.val_midright = 0
         self.val_right = 0
-        self.sub_left = rospy.Subscriber("/robot1/prox/left_range_sensor", Image, callback=self.sensor_callback_left, queue_size=1)
-        self.sub_midleft = rospy.Subscriber("/robot1/prox/front_left_range_sensor", Image, callback=self.sensor_callback_midleft, queue_size=1)
-        self.sub_midright = rospy.Subscriber("/robot1/prox/front_right_range_sensor", Image, callback=self.sensor_callback_midright, queue_size=1)
-        self.sub_right = rospy.Subscriber("/robot1/prox/right_range_sensor", Image, callback=self.sensor_callback_right, queue_size=1)
+        self.sub_left = rospy.Subscriber("/robot1/prox/left_range_sensor", LaserScan, callback=self.sensor_callback_left, queue_size=1)
+        self.sub_midleft = rospy.Subscriber("/robot1/prox/front_left_range_sensor", LaserScan, callback=self.sensor_callback_midleft, queue_size=1)
+        self.sub_midright = rospy.Subscriber("/robot1/prox/front_right_range_sensor", LaserScan, callback=self.sensor_callback_midright, queue_size=1)
+        self.sub_right = rospy.Subscriber("/robot1/prox/right_range_sensor", LaserScan, callback=self.sensor_callback_right, queue_size=1)
 
     # Normalise the proximity sensor data to conform values expected from the real life robot
     def normalise_prox(self,data: LaserScan):
@@ -125,7 +135,13 @@ class ProxSensor:
         self.val_right = self.normalise_prox(scan)
     
     def get_data(self):
-        return([self.val_left, self.val_mid_left, self.val_mid_right, self.val_right])
+        return([self.val_left, self.val_midleft, self.val_midright, self.val_right])
+    
+    def get_sum(self):
+        return self.val_midleft + self.val_midright
+
+    def get_diff(self):
+        return self.val_midleft - self.val_midright
     
 class Motors:
     def __init__(self):
@@ -177,7 +193,7 @@ class Search(smach.State):
         if line_sensor.get_data().count(1):
             reset_globals()
             return 'line'
-        elif proximity_reading >= proximity_found_threshold:
+        elif prox_sensor.get_data()[1] >= threshold_proximity_found or prox_sensor.get_data()[2] >= threshold_proximity_found:
             reset_globals()
             return 'proximity'
         else: 
@@ -220,13 +236,30 @@ class Recover(smach.State):
 # define state AttackMain
 class AttackMain(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'stalemate'])
+        smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'stalemate', 'line'])
 
     def execute(self, userdata):
-        rospy.sleep(5)
-        if time_in_state > time_stalemate:
+        global initial_loop
+        
+        if initial_loop:
+            initial_loop = False
+            
+        if(prox_sensor.get_diff() >= 1):
+            motor.set_speed(speed_veer_left)
+        elif(prox_sensor.get_diff() <= -1):
+            motor.set_speed(speed_veer_right)
+        else:
+            motor.set_speed(speed_search_drive)
+
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+            reset_globals()
+            return 'line'
+        elif time_in_state() > time_stalemate:
+            reset_globals()
             return 'stalemate'
-        elif proximity_reading <= proximity_lost_threshold:
+        # Checks readings of front two proximity sensors against threshold valuess
+        elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
+            reset_globals()
             return 'enemy_lost'
         else:
             return 'loop'
@@ -235,10 +268,27 @@ class AttackMain(smach.State):
 # define state AttackCharge
 class AttackCharge(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['loop', 'enemy_lost'])
+        smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'line'])
 
     def execute(self, userdata):
-        if proximity_reading <= proximity_lost_threshold:
+        global initial_loop
+        
+        if initial_loop:
+            initial_loop = False
+        
+        
+        if(prox_sensor.get_diff() >= 1):
+            motor.set_speed(speed_veer_left)
+        elif(prox_sensor.get_diff() <= -1):
+            motor.set_speed(speed_veer_right)
+        else:
+            motor.set_speed(speed_search_drive)
+        
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+            reset_globals()
+            return 'line'
+        elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
+            reset_globals()
             return 'enemy_lost'
         else:
             return 'loop'
@@ -276,7 +326,7 @@ def main():
         
         
         # Create the sub ATTACK
-        sm_attack = smach.StateMachine(outcomes=['attack_finished'])
+        sm_attack = smach.StateMachine(outcomes=['attack_finished_lost', 'attack_finished_line'])
 
         # Open the container
         with sm_attack:
@@ -284,14 +334,17 @@ def main():
             # Add states to the container
             smach.StateMachine.add('ATTACK_MAIN', AttackMain(), 
                                    transitions={'stalemate':'ATTACK_CHARGE',
-                                                'enemy_lost':'attack_finished',
-                                                'loop':'ATTACK_MAIN'})
+                                                'enemy_lost':'attack_finished_lost',
+                                                'line': 'attack_finished_line',
+                                                'loop':'ATTACK_MAIN',})
             smach.StateMachine.add('ATTACK_CHARGE', AttackCharge(), 
-                                   transitions={'enemy_lost':'attack_finished',
+                                   transitions={'enemy_lost':'attack_finished_lost',
+                                                'line': 'attack_finished_line',
                                                 'loop':'ATTACK_CHARGE'})
 
         smach.StateMachine.add('ATTACK', sm_attack,
-                               transitions={'attack_finished':'SEARCH'})
+                               transitions={'attack_finished_lost':'SEARCH',
+                                            'attack_finished_line':'RECOVER'})
 
     # Execute SMACH plan
     outcome = sm_main.execute()
