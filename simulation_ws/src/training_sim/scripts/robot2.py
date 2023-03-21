@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 # Code taken and adapted from Jaymeson Heller
 
-import gym
 import rospy
 import numpy as np
 import time
-from gym import utils, spaces
-from gym.utils import seeding
-from gym.envs.registration import register
-import gazebo_env
 from sensor_msgs.msg import Range, LaserScan, Image
 from random import randrange
 from geometry_msgs.msg import Twist
@@ -44,7 +39,7 @@ def normalise_line(data):
   for dats in data.data:
     if int(dats)>highest:
       highest = int(dats)
-  if highest>16:
+  if highest>60:
     return 1#1 means that the line has been detected
   else: 
     return 0 # 0 means that there's no line detected
