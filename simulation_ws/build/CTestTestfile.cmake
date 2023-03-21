@@ -5,7 +5,7 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
-subdirs("search_strategies")
+subdirs("control_system")
 subdirs("training_sim")
 subdirs("gazebo_light_sensor_plugin")
 subdirs("zumo_bot_sims")
