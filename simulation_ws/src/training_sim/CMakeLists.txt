@@ -159,10 +159,10 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    scripts/gazebo_connection.py
-   scripts/gazebo_env.py
    scripts/robot2.py
-   scripts/sumo_env.py
    scripts/pygad_test.py
+   scripts/referee.py
+  scripts/training_ga.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

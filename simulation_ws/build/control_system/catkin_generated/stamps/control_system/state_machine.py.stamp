@@ -25,7 +25,7 @@ threshold_line = 50
 # Values decided by the simulation
 threshold_proximity_found = 1
 threshold_proximity_lost = 2
-time_stalemate = 1
+time_stalemate = 3000
 time_spin_min = 1000
 time_spin_max = 2000
 
@@ -49,7 +49,13 @@ speed_veer_right.linear.x = -0.2
 speed_veer_right.angular.z = radians(180)
 
 speed_ram = Twist()
-speed_ram.linear.x = 0.5
+speed_ram.linear.x = -0.5
+speed_ram_left = Twist()
+speed_ram_left.linear.x = -0.5
+speed_ram_left.angular.z = -radians(180)
+speed_ram_right = Twist()
+speed_ram_right.linear.x = -0.5
+speed_ram_right.angular.z = radians(180)
 
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
@@ -279,11 +285,11 @@ class AttackCharge(smach.State):
         
         
         if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_veer_left)
+            motor.set_speed(speed_ram_left)
         elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_veer_right)
+            motor.set_speed(speed_ram_right)
         else:
-            motor.set_speed(speed_search_drive)
+            motor.set_speed(speed_ram)
         
         if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
             reset_globals()
@@ -300,7 +306,6 @@ def shutdown():
 
 def main():
     rospy.on_shutdown(shutdown)
-
     
     sm_main = smach.StateMachine(outcomes=['terminate'])
     
