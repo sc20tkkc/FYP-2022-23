@@ -680,6 +680,7 @@ def stationary():
 
 def main():
   while 1==1:
+    rospy.on_shutdown(stop)
     choice = randrange(6)
     if choice==0:
       stay_in_circle()

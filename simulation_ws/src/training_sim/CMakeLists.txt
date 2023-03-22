@@ -160,9 +160,9 @@ include_directories(
  catkin_install_python(PROGRAMS
    scripts/gazebo_connection.py
    scripts/robot2.py
-   scripts/pygad_test.py
    scripts/referee.py
-  scripts/training_ga.py
+   scripts/training_ga.py
+   scripts/world_manager.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
