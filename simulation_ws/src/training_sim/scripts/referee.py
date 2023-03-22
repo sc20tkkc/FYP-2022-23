@@ -61,6 +61,11 @@ class Referee():
         self.pause()
         self.robot_one.terminate()
         self.robot_two.terminate()
+        self.reset_proxy()
+        self.unpause()
+        rospy.sleep(10)
+        self.start_round()
+
 
 if __name__ == '__main__':
     try:
