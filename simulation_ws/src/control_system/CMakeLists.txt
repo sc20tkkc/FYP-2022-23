@@ -159,8 +159,11 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
    scripts/edge_detection.py
-   scripts/random_search.py
    scripts/state_machine.py
+   scripts/robot_one_controller.py
+   scripts/robot_two_controller.py
+   scripts/variable_controller.py
+   scripts/vc_caller.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

@@ -14,7 +14,7 @@ class LineSensor:
         self.sub_left = rospy.Subscriber("/robot1/camera_left/rgb/image_raw", Image, callback=self.sensor_callback, queue_size=1)
         self.sub_mid = rospy.Subscriber("/robot1/camera/rgb/image_raw", Image, callback=self.sensor_callback, queue_size=1)
         self.sub_right = rospy.Subscriber("/robot1/camera_right/rgb/image_raw", Image, callback=self.sensor_callback, queue_size=1)
-        self.pub = rospy.Publisher("/robot1/cmd_vel", Twist, queue_size=10)
+        self.pub = rospy.Publisher("/robot1/cmd_vel", Twist, queue_size=1)
     
     def sensor_callback(self, image: Image):
         rospy.loginfo(image.data[1])

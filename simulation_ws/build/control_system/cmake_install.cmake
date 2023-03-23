@@ -57,10 +57,22 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/random_search.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/state_machine.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/state_machine.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/robot_one_controller.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/robot_two_controller.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/variable_controller.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/takofish/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/vc_caller.py")
 endif()
 

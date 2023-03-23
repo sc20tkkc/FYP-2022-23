@@ -43,6 +43,13 @@
 /home/takofish/FYP-2022-23/simulation_ws/build/control_system/CMakeFiles/edit_cache.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/control_system/CMakeFiles/test.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/control_system/CMakeFiles/_catkin_empty_exported_target.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/install/strip.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/install/local.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/install.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/list_install_components.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/rebuild_cache.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/edit_cache.dir
+/home/takofish/FYP-2022-23/simulation_ws/build/training_sim/CMakeFiles/test.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/install/strip.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/install.dir
 /home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/list_install_components.dir

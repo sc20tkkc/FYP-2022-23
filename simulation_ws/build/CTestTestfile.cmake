@@ -6,5 +6,6 @@
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
 subdirs("control_system")
+subdirs("training_sim")
 subdirs("gazebo_light_sensor_plugin")
 subdirs("zumo_bot_sims")

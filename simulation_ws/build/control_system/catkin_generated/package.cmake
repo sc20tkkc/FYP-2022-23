@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "control_system")
 set(control_system_VERSION "0.0.0")
-set(control_system_MAINTAINER "takofish <takofish@todo.todo>")
+set(control_system_MAINTAINER "sc20tkkc <sc20tkkc@todo.todo>")
 set(control_system_PACKAGE_FORMAT "2")
 set(control_system_BUILD_DEPENDS "rospy")
 set(control_system_BUILD_EXPORT_DEPENDS "rospy")
