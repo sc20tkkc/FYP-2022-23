@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "zumo_bot_sims")
 set(zumo_bot_sims_VERSION "0.0.0")
-set(zumo_bot_sims_MAINTAINER "sc20tkkc <sc20tkkc@leeds.ac.uk>")
+set(zumo_bot_sims_MAINTAINER "sc20tkkc <sc20tkkc@todo.todo>")
 set(zumo_bot_sims_PACKAGE_FORMAT "2")
 set(zumo_bot_sims_BUILD_DEPENDS "rospy")
 set(zumo_bot_sims_BUILD_EXPORT_DEPENDS "rospy")

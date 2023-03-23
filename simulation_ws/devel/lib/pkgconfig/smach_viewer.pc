@@ -1,0 +1,8 @@
+prefix=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel
+
+Name: smach_viewer
+Description: Description of smach_viewer
+Version: 4.1.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: smach_ros smach_msgs

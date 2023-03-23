@@ -1,4 +1,4 @@
-prefix=/home/takofish/FYP-2022-23/simulation_ws/install
+prefix=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install
 
 Name: zumo_bot_sims
 Description: Description of zumo_bot_sims

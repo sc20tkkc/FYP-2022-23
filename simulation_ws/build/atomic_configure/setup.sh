@@ -11,7 +11,7 @@
 
 # since this file is sourced either use the provided _CATKIN_SETUP_DIR
 # or fall back to the destination set at configure time
-: ${_CATKIN_SETUP_DIR:=/home/takofish/FYP-2022-23/simulation_ws/devel}
+: ${_CATKIN_SETUP_DIR:=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel}
 _SETUP_UTIL="$_CATKIN_SETUP_DIR/_setup_util.py"
 unset _CATKIN_SETUP_DIR
 

@@ -1,4 +1,4 @@
-prefix=/home/takofish/FYP-2022-23/simulation_ws/install
+prefix=/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install
 
 Name: gazebo_light_sensor_plugin
 Description: Description of gazebo_light_sensor_plugin

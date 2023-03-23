@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/takofish/FYP-2022-23/simulation_ws/devel/lib/libgazebo_light_sensor_plugin.pdb"
-  "/home/takofish/FYP-2022-23/simulation_ws/devel/lib/libgazebo_light_sensor_plugin.so"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel/lib/libgazebo_light_sensor_plugin.pdb"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel/lib/libgazebo_light_sensor_plugin.so"
   "CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.o"
 )
 

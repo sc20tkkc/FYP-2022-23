@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/src/light_sensor_plugin.cpp" "/home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.o"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/src/light_sensor_plugin.cpp" "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/CMakeFiles/gazebo_light_sensor_plugin.dir/src/light_sensor_plugin.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -30,12 +30,12 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/include"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/gazebo-11"
   "/usr/include/bullet"
-  "/usr/include/sdformat-9.10"
+  "/usr/include/sdformat-9.8"
   "/usr/include/OGRE"
   "/usr/include/OGRE/Terrain"
   "/usr/include/OGRE/Paging"
@@ -46,7 +46,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/ignition/common3"
   "/usr/include/ignition/fuel_tools4"
   "/usr/include/eigen3"
-  "/usr/include/sdformat-9.10/sdf/.."
+  "/usr/include/sdformat-9.8/sdf/.."
   "/usr/include/ignition/cmake2"
   "/usr/include/uuid"
   )

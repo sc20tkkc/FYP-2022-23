@@ -1,8 +1,0 @@
-prefix=/home/takofish/FYP-2022-23/simulation_ws/install
-
-Name: search_strategies
-Description: Description of search_strategies
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

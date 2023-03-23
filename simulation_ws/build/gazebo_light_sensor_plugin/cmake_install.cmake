@@ -1,8 +1,8 @@
-# Install script for directory: /home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin
+# Install script for directory: /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/takofish/FYP-2022-23/simulation_ws/install")
+  set(CMAKE_INSTALL_PREFIX "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_plugin.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_plugin.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gazebo_light_sensor_plugin/cmake" TYPE FILE FILES
-    "/home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_pluginConfig.cmake"
-    "/home/takofish/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_pluginConfig-version.cmake"
+    "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_pluginConfig.cmake"
+    "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/gazebo_light_sensor_plugin/catkin_generated/installspace/gazebo_light_sensor_pluginConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gazebo_light_sensor_plugin" TYPE FILE FILES "/home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gazebo_light_sensor_plugin" TYPE FILE FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin/package.xml")
 endif()
 

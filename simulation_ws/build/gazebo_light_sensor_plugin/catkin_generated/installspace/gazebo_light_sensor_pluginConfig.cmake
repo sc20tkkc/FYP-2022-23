@@ -67,14 +67,14 @@ set(gazebo_light_sensor_plugin_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(gazebo_light_sensor_plugin_SOURCE_PREFIX /home/takofish/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin)
-  set(gazebo_light_sensor_plugin_DEVEL_PREFIX /home/takofish/FYP-2022-23/simulation_ws/devel)
+  set(gazebo_light_sensor_plugin_SOURCE_PREFIX /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/gazebo_light_sensor_plugin)
+  set(gazebo_light_sensor_plugin_DEVEL_PREFIX /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel)
   set(gazebo_light_sensor_plugin_INSTALL_PREFIX "")
   set(gazebo_light_sensor_plugin_PREFIX ${gazebo_light_sensor_plugin_DEVEL_PREFIX})
 else()
   set(gazebo_light_sensor_plugin_SOURCE_PREFIX "")
   set(gazebo_light_sensor_plugin_DEVEL_PREFIX "")
-  set(gazebo_light_sensor_plugin_INSTALL_PREFIX /home/takofish/FYP-2022-23/simulation_ws/install)
+  set(gazebo_light_sensor_plugin_INSTALL_PREFIX /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install)
   set(gazebo_light_sensor_plugin_PREFIX ${gazebo_light_sensor_plugin_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/takofish/FYP-2022-23/simulation_ws/install/lib;/home/takofish/FYP-2022-23/simulation_ws/devel/lib;/home/takofish/catkin_ws/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/install/lib;/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/devel/lib;/home/csunix/sc20tkkc/catkin_ws/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

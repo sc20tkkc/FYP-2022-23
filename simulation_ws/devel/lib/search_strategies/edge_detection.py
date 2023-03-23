@@ -3,7 +3,7 @@
 # generated from catkin/cmake/template/script.py.in
 # creates a relay to a python script source file, acting as that file.
 # The purpose is that of a symlink
-python_script = '/home/takofish/FYP-2022-23/simulation_ws/src/search_strategies/scripts/edge_detection.py'
+python_script = '/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/search_strategies/scripts/edge_detection.py'
 with open(python_script, 'r') as fh:
     context = {
         '__builtins__': __builtins__,
