@@ -6,7 +6,19 @@ import signal
 import subprocess
 import json 
 
+"""
+Given the following function:
+    y = f(w1:w6) = w1x1 + w2x2 + w3x3 + w4x4 + w5x5 + 6wx6
+    where (x1,x2,x3,x4,x5,x6)=(4,-2,3.5,5,-11,-4.7) and y=44
+What are the best values for the 6 weights (w1 to w6)? We are going to use the genetic algorithm to optimize this function.
+"""
+
+function_inputs = [4,-2,3.5,5,-11,-4.7] # Function inputs.
+desired_output = 44 # Function output.
+
 def fitness_func(solution, solution_idx):
+    # Calculating the fitness value of each solution in the current population.
+    # The fitness function calulates the sum of products between each input and its corresponding weight.
     cmd = ["rosrun", "control_system", "variable_controller.py"]
     cmd.append(json.dumps(solution.tolist()))
     proc = subprocess.run(cmd)

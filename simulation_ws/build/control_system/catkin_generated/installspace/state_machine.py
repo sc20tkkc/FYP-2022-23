@@ -338,7 +338,7 @@ def main():
         
         
         # Create the sub ATTACK
-        sm_attack = smach.StateMachine(outcomes=['attack_finished_lost', 'attack_finished_line'])
+        sm_attack = smach.StateMachine(outcomes=['attack_finished_lost', 'attack_finished_line', None])
 
         # Open the container
         with sm_attack:
@@ -356,7 +356,8 @@ def main():
 
         smach.StateMachine.add('ATTACK', sm_attack,
                                transitions={'attack_finished_lost':'SEARCH',
-                                            'attack_finished_line':'RECOVER'})
+                                            'attack_finished_line':'RECOVER',
+                                            None:'terminate'})
 
     # Execute SMACH plan
     outcome = sm_main.execute()

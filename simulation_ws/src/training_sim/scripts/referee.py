@@ -1,5 +1,3 @@
-# Code taken and adapted from theconstructsim.com & Jaymeson Heller
-
 import rospy
 import roslaunch
 import os
@@ -26,7 +24,6 @@ class Referee():
     def check_robot_one(self):
         try:
             odom = rospy.wait_for_message('/robot1/odom', Odometry, timeout=5)
-            rospy.loginfo("Check 1!")
             x = odom.pose.pose.position.x
             y = odom.pose.pose.position.y
             if abs(x)>0.35 or abs(y)>0.35:
@@ -41,7 +38,6 @@ class Referee():
     def check_robot_two(self):
         try:
             odom = rospy.wait_for_message('/robot2/odom', Odometry, timeout=5)
-            rospy.loginfo("Check 2!")
             x = odom.pose.pose.position.x
             y = odom.pose.pose.position.y
             if abs(x)>0.35 or abs(y)>0.35:
@@ -63,8 +59,7 @@ class Referee():
         self.robot_two.terminate()
         self.reset_proxy()
         self.unpause()
-        rospy.sleep(10)
-        self.start_round()
+        rospy.sleep(3)
 
 
 if __name__ == '__main__':

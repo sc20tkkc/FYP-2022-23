@@ -158,8 +158,6 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
-   scripts/gazebo_connection.py
-   scripts/robot2.py
    scripts/referee.py
    scripts/training_ga.py
    scripts/world_manager.py

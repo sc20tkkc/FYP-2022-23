@@ -23,11 +23,14 @@ state_start_time = time.time()
 threshold_line = 50
 
 # Values decided by the simulation
+# Predfined times that are determined by the simulation
 threshold_proximity_found = 1
 threshold_proximity_lost = 2
+threshold_proximity_ram = 4
 time_stalemate = 3000
 time_spin_min = 1000
 time_spin_max = 2000
+time_recover = 1000
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
@@ -61,8 +64,8 @@ speed_stop = Twist()
 speed_stop.linear.x = 0.0
 speed_stop.angular.z = 0.0
 
-# Predfined times that are determined by the simulation
-time_recover = 1000
+
+
 
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
@@ -86,7 +89,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>50:
+        if highest>70:
             return 1
         else: 
             return 0
@@ -261,11 +264,11 @@ class AttackMain(smach.State):
         if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
             reset_globals()
             return 'line'
-        elif time_in_state() > time_stalemate:
+        elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
             reset_globals()
             return 'stalemate'
         # Checks readings of front two proximity sensors against threshold valuess
-        elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
+        elif prox_sensor.get_data()[1] < threshold_proximity_lost or prox_sensor.get_data()[2] < threshold_proximity_lost:
             reset_globals()
             return 'enemy_lost'
         else:

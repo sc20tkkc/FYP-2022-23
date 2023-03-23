@@ -276,7 +276,7 @@ class SumoEnv(gazebo_env.GazeboEnv):
 
         return state, reward, done, {}
 
-    def reset(self):
+    def         s(self):
         print("reset called")
         rospy.wait_for_service('/gazebo/reset_world')
         try:

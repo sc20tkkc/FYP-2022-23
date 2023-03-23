@@ -2,33 +2,27 @@
 
 import pygad
 import numpy
-
-"""
-Given the following function:
-    y = f(w1:w6) = w1x1 + w2x2 + w3x3 + w4x4 + w5x5 + 6wx6
-    where (x1,x2,x3,x4,x5,x6)=(4,-2,3.5,5,-11,-4.7) and y=44
-What are the best values for the 6 weights (w1 to w6)? We are going to use the genetic algorithm to optimize this function.
-"""
-
-function_inputs = [4,-2,3.5,5,-11,-4.7] # Function inputs.
-desired_output = 44 # Function output.
+import signal
+import subprocess
+import json 
 
 def fitness_func(solution, solution_idx):
-    # Calculating the fitness value of each solution in the current population.
-    # The fitness function calulates the sum of products between each input and its corresponding weight.
+    cmd = ["rosrun", "control_system", "variable_controller.py"]
+    cmd.append(json.dumps(solution.tolist()))
+    proc = subprocess.run(cmd)
     output = numpy.sum(solution*function_inputs)
     fitness = 1.0 / numpy.abs(output - desired_output)
     return fitness
 
 fitness_function = fitness_func
 
-num_generations = 100 # Number of generations.
-num_parents_mating = 7 # Number of solutions to be selected as parents in the mating pool.
+num_generations = 5 # Number of generations.
+num_parents_mating = 4 # Number of solutions to be selected as parents in the mating pool.
 
 # To prepare the initial population, there are 2 ways:
 # 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
-sol_per_pop = 50 # Number of solutions in the population.
+sol_per_pop = 10 # Number of solutions in the population.
 num_genes = len(function_inputs)
 
 last_fitness = 0
