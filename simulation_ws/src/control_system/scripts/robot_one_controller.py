@@ -20,13 +20,14 @@ state_start_time = time.time()
 # Temporary variables used to define strcuture of state machine
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 70
+threshold_line = 50
 
 # Values decided by the simulation
 # Predfined times that are determined by the simulation
 threshold_proximity_found = 1
 threshold_proximity_lost = 2
 threshold_proximity_ram = 4
+threshold_proximity_veer = 4
 time_stalemate = 3000
 time_spin_min = 1000
 time_spin_max = 2000
@@ -44,12 +45,22 @@ speed_search_drive.linear.x = -0.2
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
 
+speed_attack= Twist()
+speed_attack.linear.x = -0.2
+
 speed_veer_left = Twist()
 speed_veer_left.linear.x = -0.2
 speed_veer_left.angular.z = -radians(180)
 speed_veer_right = Twist()
 speed_veer_right.linear.x = -0.2
 speed_veer_right.angular.z = radians(180)
+
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -0.4
+speed_swerve_left.angular.z = -radians(180)
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -0.4
+speed_swerve_right.angular.z = radians(180)
 
 speed_ram = Twist()
 speed_ram.linear.x = -0.5
@@ -256,9 +267,9 @@ class AttackMain(smach.State):
         elif(prox_sensor.get_diff() <= -1):
             motor.set_speed(speed_veer_right)
         else:
-            motor.set_speed(speed_search_drive)
+            motor.set_speed(speed_attack)
 
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1):
             reset_globals()
             return 'line'
         elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:

@@ -14,11 +14,15 @@ import time
 import sys
 import numpy
 import json
-
 args = sys.argv[1:]
 
+def init_consts():
+    global args
 
 for arg in args:
     solution = json.loads(arg)
-    for weight in solution:
-        print(weight)
+    if args:
+        for i in range(0,len(solution)):
+            print(i, solution[i])
+
+init_consts()
