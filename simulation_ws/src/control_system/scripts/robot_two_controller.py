@@ -45,12 +45,22 @@ speed_search_drive.linear.x = -0.2
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
 
+speed_attack= Twist()
+speed_attack.linear.x = -0.2
+
 speed_veer_left = Twist()
 speed_veer_left.linear.x = -0.2
 speed_veer_left.angular.z = -radians(180)
 speed_veer_right = Twist()
 speed_veer_right.linear.x = -0.2
 speed_veer_right.angular.z = radians(180)
+
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -0.4
+speed_swerve_left.angular.z = -radians(180)
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -0.4
+speed_swerve_right.angular.z = radians(180)
 
 speed_ram = Twist()
 speed_ram.linear.x = -0.5
@@ -64,9 +74,6 @@ speed_ram_right.angular.z = radians(180)
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
 speed_stop.angular.z = 0.0
-
-
-
 
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
@@ -90,7 +97,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>70:
+        if highest>threshold_line:
             return 1
         else: 
             return 0
@@ -260,7 +267,7 @@ class AttackMain(smach.State):
         elif(prox_sensor.get_diff() <= -1):
             motor.set_speed(speed_veer_right)
         else:
-            motor.set_speed(speed_search_drive)
+            motor.set_speed(speed_attack)
 
         if line_sensor.get_data().count(1):
             reset_globals()
@@ -362,7 +369,6 @@ def main():
                                transitions={'attack_finished_lost':'SEARCH',
                                             'attack_finished_line':'RECOVER',
                                             None:'terminate'})
-
 
     # Execute SMACH plan
     outcome = sm_main.execute()

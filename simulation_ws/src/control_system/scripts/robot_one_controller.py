@@ -45,6 +45,9 @@ speed_search_drive.linear.x = -0.2
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
 
+speed_attack= Twist()
+speed_attack.linear.x = -0.2
+
 speed_veer_left = Twist()
 speed_veer_left.linear.x = -0.2
 speed_veer_left.angular.z = -radians(180)
@@ -264,7 +267,7 @@ class AttackMain(smach.State):
         elif(prox_sensor.get_diff() <= -1):
             motor.set_speed(speed_veer_right)
         else:
-            motor.set_speed(speed_search_drive)
+            motor.set_speed(speed_attack)
 
         if line_sensor.get_data().count(1):
             reset_globals()
