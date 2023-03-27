@@ -20,5 +20,9 @@ args = sys.argv[1:]
 
 for arg in args:
     solution = json.loads(arg)
+    if args:
+        print("args present")
+    else:
+        print("args missing")
     for weight in solution:
         print(weight)
