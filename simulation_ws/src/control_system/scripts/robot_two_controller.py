@@ -27,6 +27,7 @@ threshold_line = 50
 threshold_proximity_found = 1
 threshold_proximity_lost = 2
 threshold_proximity_ram = 4
+threshold_proximity_veer = 4
 time_stalemate = 3000
 time_spin_min = 1000
 time_spin_max = 2000
@@ -261,7 +262,7 @@ class AttackMain(smach.State):
         else:
             motor.set_speed(speed_search_drive)
 
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1):
             reset_globals()
             return 'line'
         elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
