@@ -15,15 +15,26 @@ Defines the ranges of values that each part of the soluation can take seperated 
  threshold_proximity_ram, speed_ram, threshold_proximity_swerve, speed_swerve_low, speed_swerve_high]
 """
 gene_space_state = [{'low':-400, 'high': 0, 'step': 1}, {'low': 0, 'high': 10000, 'step': 1},
-                    {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high': 360, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':12, 'step': 1},
+                    {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':12, 'step': 1},
                     {'low': 0, 'high':12, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':6, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':10000, 'step': 1},
                     {'low': 0, 'high':12, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':6, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':400, 'step': 1}]
 
+def velocity_conversion(left_output, right_output):
+    # Conversion constant specific to Zumo32U4 with 100:1 HP Motors
+    constant_conversion = 0.00125
+    constant_distance = 0.0877 
+    velocity_left = left_output * constant_conversion
+    velocity_right = right_output * constant_conversion
+    velocity_linear = (velocity_left + velocity_right)/2
+    velocity_angular = (velocity_left / constant_distance) - (velocity_right / constant_distance)
+    
+    return[velocity_linear, velocity_angular]
 
 def fitness_func(solution, solution_idx):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function calulates the sum of products between each input and its corresponding weight.
     cmd = ["rosrun", "control_system", "variable_controller.py"]
+    # cmd = ["rosrun", "control_system", "robot_one_controller"]
     cmd.append(json.dumps(solution.tolist()))
     proc = subprocess.run(cmd)
     fitness = sum(solution)
