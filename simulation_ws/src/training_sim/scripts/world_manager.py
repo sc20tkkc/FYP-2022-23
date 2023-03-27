@@ -111,7 +111,7 @@ def _shutdown():
     if controller_two_count > 0:
         os.system("killall -9 robot_two_controller.py")
 
-    if (gzclient_count or gzserver_count or roscore_count or rosmaster_count >0):
+    if (gzclient_count or gzserver_count or roscore_count or rosmaster_count or controller_one_count or controller_two_count >0):
         os.wait()
 
 
