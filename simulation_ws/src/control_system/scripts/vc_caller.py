@@ -9,14 +9,15 @@ import json
 """
 Defines the ranges of values that each part of the soluation can take seperated by relation to each state
 [speed_recover, time_recover, 
- speed_search_linear, speed_search_low, speed_search_high, time_spin_min, time_spin_max, threshold_proximity_lost, 
+ speed_search_linear, speed_search_low, speed_search_high, strategy_search, time_spin_min, time_spin_max, threshold_proximity_lost, 
  threshold_proximity_found, speed_attack, threshold_proximity_veer, speed_veer_low, speed_veer_high, time_stalemate,
  threshold_proximity_ram, speed_ram, threshold_proximity_swerve, speed_swerve_low, speed_swerve_high]
 """
-gene_space_state = [{'low':-400, 'high': 0, 'step': 1}, {'low': 0, 'high': 10000, 'step': 1},
-                    {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high': 400, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':10000, 'step': 1}, {'low': 0, 'high':12, 'step': 1},
-                    {'low': 0, 'high':12, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':6, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':10000, 'step': 1},
-                    {'low': 0, 'high':12, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':6, 'step': 1}, {'low': 0, 'high':400, 'step': 1}, {'low': 0, 'high':400, 'step': 1}]
+gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 10001, 'step': 1},
+                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':10001, 'step': 1}, {'low': 0, 'high':10001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
+                    {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':10001, 'step': 1},
+                    {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}]
+
 
 def velocity_conversion(left_output, right_output):
     # Conversion constant specific to Zumo32U4 with 100:1 HP Motors
@@ -33,9 +34,9 @@ def velocity_conversion(left_output, right_output):
 def physical_to_simulation(solution):
     solution_list = solution.tolist()
     
-    index_linear = [0,2,9,15]
-    index_angular = [3,4,11,12,17,18]
-    index_other = [1,5,6,7,8,10,13,14,16]
+    index_linear = [0,2,10,16]
+    index_angular = [3,4,12,13,18,19]
+    index_other = [1,5,6,7,8,9,11,14,15,17]
     
     args = []
     i=0
@@ -56,9 +57,9 @@ def physical_to_simulation(solution):
     return args
 
 
+
 # Calculating the fitness value of each solution in the current population.
 # The fitness function calulates the sum of products between each input and its corresponding weight.
-
 def fitness_func(solution, solution_idx):
     cmd = ["rosrun", "control_system", "variable_controller.py"]
     # cmd = ["rosrun", "control_system", "robot_one_controller"]
@@ -77,7 +78,7 @@ num_parents_mating = 4 # Number of solutions to be selected as parents in the ma
 # 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
 sol_per_pop = 10 # Number of solutions in the population.
-num_genes = 19 # Hard coded to allign with the length of gene_space
+num_genes = 20 # Hard coded to allign with the length of gene_space
 
 last_fitness = 0
 def callback_generation(ga_instance):
