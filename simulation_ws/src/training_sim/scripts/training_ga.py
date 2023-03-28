@@ -61,7 +61,7 @@ def physical_to_simulation(solution):
 # Calculating the fitness value of each solution in the current population.
 # The fitness function calulates the sum of products between each input and its corresponding weight.
 def fitness_func(solution, solution_idx):
-    cmd = ["rosrun", "control_system", "robot_one_controller"]
+    cmd = ["rosrun", "control_system", "robot_one_controller.py"]
     physical_to_simulation(solution)
     cmd.append(json.dumps(physical_to_simulation(solution)))    # Converts solution to usable form and appends to command
     proc = subprocess.run(cmd)
