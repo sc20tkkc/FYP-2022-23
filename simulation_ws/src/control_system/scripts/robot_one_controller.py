@@ -271,7 +271,7 @@ class AttackMain(smach.State):
         else:
             motor.set_speed(speed_attack)
 
-        if line_sensor.get_data().count(1):
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:  # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
@@ -304,7 +304,7 @@ class AttackCharge(smach.State):
         else:
             motor.set_speed(speed_ram)
         
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:  # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:

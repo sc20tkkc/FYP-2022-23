@@ -55,6 +55,9 @@ speed_veer_right = Twist()
 speed_veer_right.linear.x = -0.2
 speed_veer_right.angular.z = radians(180)
 
+speed_ram = Twist()
+speed_ram.linear.x = -0.5
+
 speed_swerve_left = Twist()
 speed_swerve_left.linear.x = -0.4
 speed_swerve_left.angular.z = -radians(180)
@@ -62,14 +65,6 @@ speed_swerve_right = Twist()
 speed_swerve_right.linear.x = -0.4
 speed_swerve_right.angular.z = radians(180)
 
-speed_ram = Twist()
-speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
 
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
@@ -268,8 +263,8 @@ class AttackMain(smach.State):
             motor.set_speed(speed_veer_right)
         else:
             motor.set_speed(speed_attack)
-
-        if line_sensor.get_data().count(1):
+        
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2: # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
@@ -296,13 +291,13 @@ class AttackCharge(smach.State):
         
         
         if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_ram_left)
+            motor.set_speed(speed_swerve_left)
         elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_ram_right)
+            motor.set_speed(speed_swerve_right)
         else:
             motor.set_speed(speed_ram)
         
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2: # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
