@@ -13,63 +13,64 @@ import smach_ros
 from math import radians
 import random
 import time
+import sys
 
 initial_loop = True
 state_start_time = time.time()
 
-# Temporary variables used to define strcuture of state machine
+# Initialise all the values passed through by the genetic algorithm
+# There has to be a better way to do this
+args = sys.argv[1:]
+
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
 threshold_line = 50
 
 # Values decided by the simulation
+# Thresholds that act affect state transitions
+threshold_proximity_found = args[8]
+threshold_proximity_lost = args[9]
+threshold_proximity_ram = args[15]
+threshold_proximity_veer = args[11]
+threshold_proximity_swerve = args[17]
+
 # Predfined times that are determined by the simulation
-threshold_proximity_found = 1
-threshold_proximity_lost = 2
-threshold_proximity_ram = 4
-threshold_proximity_veer = 4
-time_stalemate = 3000
-time_spin_min = 1000
-time_spin_max = 2000
-time_recover = 1000
+time_stalemate = args[14]
+time_spin_min = args[6]
+time_spin_max = args[7]
+time_recover = args[1]
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
-speed_search_left.angular.z = -radians(270)
+speed_search_left.angular.z = -args[4]
 speed_search_right = Twist()
-speed_search_right.angular.z = radians(270)
+speed_search_right.angular.z = args[4]
 
 speed_search_drive = Twist()
-speed_search_drive.linear.x = -0.2
+speed_search_drive.linear.x = -args[4]
 
 speed_recover = Twist()
-speed_recover.linear.x = 0.2
+speed_recover.linear.x = args[0]
 
 speed_attack= Twist()
-speed_attack.linear.x = -0.2
+speed_attack.linear.x = -args[10]
 
 speed_veer_left = Twist()
-speed_veer_left.linear.x = -0.2
-speed_veer_left.angular.z = -radians(180)
+speed_veer_left.linear.x = -args[12]
+speed_veer_left.angular.z = -args[13]
 speed_veer_right = Twist()
-speed_veer_right.linear.x = -0.2
-speed_veer_right.angular.z = radians(180)
-
-speed_swerve_left = Twist()
-speed_swerve_left.linear.x = -0.4
-speed_swerve_left.angular.z = -radians(180)
-speed_swerve_right = Twist()
-speed_swerve_right.linear.x = -0.4
-speed_swerve_right.angular.z = radians(180)
+speed_veer_right.linear.x = -args[12]
+speed_veer_right.angular.z = args[13]
 
 speed_ram = Twist()
-speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
+speed_ram.linear.x = -args[16]
+
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -args[18]
+speed_swerve_left.angular.z = -args[19]
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -args[18]
+speed_swerve_right.angular.z = args[19]
 
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
@@ -78,7 +79,6 @@ speed_stop.angular.z = 0.0
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
 # Seperate classes and instances for each seperate actuator and sensor to mimic arduino implementation
-
 class LineSensor:
     def __init__(self):
         # Queue size set to 1 as values too large cause a build up due to invoking sleep during certain points of actuation
@@ -180,6 +180,8 @@ def reset_globals():
 # Return the time spent in the state in milliseconds
 def time_in_state():
     return (time.time() - state_start_time) * 1000
+
+def init_consts(args):
 
 
 # define state Search
@@ -296,9 +298,9 @@ class AttackCharge(smach.State):
         
         
         if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_ram_left)
+            motor.set_speed(speed_swerve_left)
         elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_ram_right)
+            motor.set_speed(speed_swerve_right)
         else:
             motor.set_speed(speed_ram)
         
@@ -382,7 +384,7 @@ if __name__ == '__main__':
         prox_sensor = ProxSensor()
         motor = Motors()
         main()
-        # rospy.spin()
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
     
