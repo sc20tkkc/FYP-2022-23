@@ -6,7 +6,6 @@ import signal
 import subprocess
 import json 
 
-
 """
 Defines the ranges of values that each part of the soluation can take seperated by relation to each state
 [speed_recover, time_recover, 
@@ -25,30 +24,46 @@ def velocity_conversion(left_output, right_output):
     constant_distance = 0.0877 
     velocity_left = left_output * constant_conversion
     velocity_right = right_output * constant_conversion
-    velocity_linear = (velocity_left + velocity_right)/2
-    velocity_angular = (velocity_left / constant_distance) - (velocity_right / constant_distance)
+    velocity_linear = (velocity_left + velocity_right) / 2
+    velocity_angular = (velocity_left - velocity_right) / constant_distance
     
     return[velocity_linear, velocity_angular]
+
 
 def physical_to_simulation(solution):
     solution_list = solution.tolist()
     
     index_linear = [0,2,9,15]
-    index_angular = [[3,4], [11,12], [17,18]]
+    index_angular = [3,4,11,12,17,18]
     index_other = [1,5,6,7,8,10,13,14,16]
     
     args = []
+    i=0
     
-    for i in range(0,len(solution_list))
-        
+    while i < len(solution_list):
+        if i in index_linear:
+            # If solely linear velocity convert to appropriate linear velocty and append to list
+            args.append(velocity_conversion(solution_list[i],solution_list[i])[0])
+        elif i in index_other:
+            # If a time or threshold append as is
+            args.append(solution_list[i])
+        else:
+            # If a mix of linear and angular convert to appropriate velocities and extend by [linear,angular]
+            args.extend(velocity_conversion(solution_list[i],solution_list[i+1]))
+            i+=1
+        i+=1
     
+    return args
+
+
+# Calculating the fitness value of each solution in the current population.
+# The fitness function calulates the sum of products between each input and its corresponding weight.
 
 def fitness_func(solution, solution_idx):
-    # Calculating the fitness value of each solution in the current population.
-    # The fitness function calulates the sum of products between each input and its corresponding weight.
     cmd = ["rosrun", "control_system", "variable_controller.py"]
     # cmd = ["rosrun", "control_system", "robot_one_controller"]
-    cmd.append(json.dumps(solution.tolist()))
+    physical_to_simulation(solution)
+    cmd.append(json.dumps(physical_to_simulation(solution)))    # Converts solution to usable form and appends to command
     proc = subprocess.run(cmd)
     fitness = sum(solution)
     return fitness
