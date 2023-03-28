@@ -43,6 +43,8 @@ speed_swerve_angular = 19
 
 args = sys.argv[1:]
 
+print(args[0])
+
 for arg in args:
     solution = json.loads(arg)
     if args:

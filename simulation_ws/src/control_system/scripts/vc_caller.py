@@ -13,9 +13,9 @@ Defines the ranges of values that each part of the soluation can take seperated 
  threshold_proximity_found, speed_attack, threshold_proximity_veer, speed_veer_low, speed_veer_high, time_stalemate,
  threshold_proximity_ram, speed_ram, threshold_proximity_swerve, speed_swerve_low, speed_swerve_high]
 """
-gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 10001, 'step': 1},
-                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':10001, 'step': 1}, {'low': 0, 'high':10001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
-                    {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':10001, 'step': 1},
+gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 5001, 'step': 1},
+                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
+                    {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':5001, 'step': 1},
                     {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}]
 
 
@@ -62,7 +62,6 @@ def physical_to_simulation(solution):
 # The fitness function calulates the sum of products between each input and its corresponding weight.
 def fitness_func(solution, solution_idx):
     cmd = ["rosrun", "control_system", "variable_controller.py"]
-    # cmd = ["rosrun", "control_system", "robot_one_controller"]
     physical_to_simulation(solution)
     cmd.append(json.dumps(physical_to_simulation(solution)))    # Converts solution to usable form and appends to command
     proc = subprocess.run(cmd)
