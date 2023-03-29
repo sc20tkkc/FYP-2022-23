@@ -6,6 +6,7 @@ import signal
 import subprocess
 import json 
 
+
 """
 Defines the ranges of values that each part of the soluation can take seperated by relation to each state
 [speed_recover, time_recover, 
@@ -18,7 +19,7 @@ gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 5001,
                     {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':5001, 'step': 1},
                     {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}]
 
-
+# Converts wheel speeds used in physical robot to linear and angular velocities for simulation control system
 def velocity_conversion(left_output, right_output):
     # Conversion constant specific to Zumo32U4 with 100:1 HP Motors
     constant_conversion = 0.00125
@@ -30,7 +31,7 @@ def velocity_conversion(left_output, right_output):
     
     return[velocity_linear, velocity_angular]
 
-
+# Converts values used in the physical robot to values suitable for the simulation
 def physical_to_simulation(solution):
     solution_list = solution.tolist()
     
@@ -56,10 +57,8 @@ def physical_to_simulation(solution):
     
     return args
 
-
-
 # Calculating the fitness value of each solution in the current population.
-# The fitness function calulates the sum of products between each input and its corresponding weight.
+# Used to call the robot control system when each solution is passed
 def fitness_func(solution, solution_idx):
     cmd = ["rosrun", "control_system", "robot_one_controller.py"]
     physical_to_simulation(solution)
@@ -68,18 +67,14 @@ def fitness_func(solution, solution_idx):
     fitness = sum(solution)
     return fitness
 
+# Define variables used in the genetic algorithm
 fitness_function = fitness_func
-
 num_generations = 5 # Number of generations.
 num_parents_mating = 4 # Number of solutions to be selected as parents in the mating pool.
-
-# To prepare the initial population, there are 2 ways:
-# 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
-# 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
 sol_per_pop = 10 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
-
 last_fitness = 0
+
 def callback_generation(ga_instance):
     global last_fitness
     print("Generation = {generation}".format(generation=ga_instance.generations_completed))
