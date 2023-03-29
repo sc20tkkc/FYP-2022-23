@@ -27,7 +27,9 @@ class WorldManager:
         self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_world', Empty)
         self.robot_one = 0
-        self.robot_two = 0  
+        self.robot_two = 0
+        self.count_loss = 0
+        self.count_wins = 0
         
         subprocess.Popen("roscore")
         print ("Roscore launched!")
@@ -47,7 +49,7 @@ class WorldManager:
 
         self.gzclient_pid = 0
     
-    def _check_robot_one(self):
+    def check_robot_one(self):
         try:
             odom = rospy.wait_for_message('/robot1/odom', Odometry, timeout=5)
             x = odom.pose.pose.position.x
@@ -61,7 +63,7 @@ class WorldManager:
             print(e)
             pass
         
-    def _check_robot_two(self):
+    def check_robot_two(self):
         try:
             odom = rospy.wait_for_message('/robot2/odom', Odometry, timeout=5)
             x = odom.pose.pose.position.x
@@ -75,20 +77,20 @@ class WorldManager:
             print(e)
             pass
 
-    def _reset(self):
+    def reset(self):
         self.pause()
         self.robot_one.terminate()
         self.robot_two.terminate()
         self.reset_proxy()
         self.unpause()
     
-    def _start(self):
+    def start(self):
         self.robot_one = subprocess.Popen(robot_one_cmd)
         self.robot_two = subprocess.Popen(robot_two_cmd)
         
 
 # Not sure if it really exits gracefully
-def _shutdown():
+def shutdown():
     # Kill gzclient, gzserver and roscore
     tmp = os.popen("ps -Af").read()
     gzclient_count = tmp.count('gzclient')
@@ -119,10 +121,10 @@ if __name__ == '__main__':
     try:
         world_manager = WorldManager(launch_path)
         time.sleep(20)
-        world_manager._start()
+        # world_manager.start()
         while not rospy.is_shutdown():
-            if world_manager._check_robot_one() or world_manager._check_robot_two():
-                world_manager._reset()
-        rospy.on_shutdown(_shutdown)
+            if world_manager.check_robot_one() or world_manager.check_robot_two():
+                world_manager.reset()
+        rospy.on_shutdown(shutdown)
     except rospy.ROSInterruptException:
         pass
