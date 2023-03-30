@@ -56,6 +56,7 @@ class WorldManager:
             y = odom.pose.pose.position.y
             if abs(x)>0.35 or abs(y)>0.35:
                 rospy.loginfo("Robot 1 Lost!")
+                self.count_loss +=1
                 return True
             else:
                 return False
@@ -70,6 +71,7 @@ class WorldManager:
             y = odom.pose.pose.position.y
             if abs(x)>0.35 or abs(y)>0.35:
                 rospy.loginfo("Robot 2 Lost!")
+                self.count_wins +=1
                 return True
             else:
                 return False
@@ -82,9 +84,9 @@ class WorldManager:
         self.robot_one.terminate()
         self.robot_two.terminate()
         self.reset_proxy()
-        self.unpause()
     
     def start(self):
+        self.unpause()
         self.robot_one = subprocess.Popen(robot_one_cmd)
         self.robot_two = subprocess.Popen(robot_two_cmd)
         
@@ -113,7 +115,7 @@ def shutdown():
     if controller_two_count > 0:
         os.system("killall -9 robot_two_controller.py")
 
-    if (gzclient_count or gzserver_count or roscore_count or rosmaster_count or controller_one_count or controller_two_count >0):
+    if (gzclient_count or gzserver_count or roscore_count or rosmaster_count or controller_one_count or controller_two_count):
         os.wait()
 
 

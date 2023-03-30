@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import pygad
+import rospy
+import roslaunch
 import numpy
 import signal
 import subprocess
-import json 
+import json
+import os
 
 
 """
