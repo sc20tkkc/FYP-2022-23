@@ -64,3 +64,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/training_sim" TYPE PROGRAM FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/training_sim/catkin_generated/installspace/world_manager.py")
 endif()
 
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/training_sim" TYPE PROGRAM FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/training_sim/catkin_generated/installspace/start_training.py")
+endif()
+

@@ -32,6 +32,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/CMakeLists.txt"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/package.xml"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/scripts/referee.py"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/scripts/start_training.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/scripts/training_ga.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/training_sim/scripts/world_manager.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/zumo_bot_sims/CMakeLists.txt"

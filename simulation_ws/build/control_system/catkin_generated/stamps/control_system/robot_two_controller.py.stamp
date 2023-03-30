@@ -27,6 +27,7 @@ threshold_line = 50
 threshold_proximity_found = 1
 threshold_proximity_lost = 2
 threshold_proximity_ram = 4
+threshold_proximity_veer = 4
 time_stalemate = 3000
 time_spin_min = 1000
 time_spin_max = 2000
@@ -44,6 +45,9 @@ speed_search_drive.linear.x = -0.2
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
 
+speed_attack= Twist()
+speed_attack.linear.x = -0.2
+
 speed_veer_left = Twist()
 speed_veer_left.linear.x = -0.2
 speed_veer_left.angular.z = -radians(180)
@@ -53,19 +57,18 @@ speed_veer_right.angular.z = radians(180)
 
 speed_ram = Twist()
 speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
+
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -0.4
+speed_swerve_left.angular.z = -radians(180)
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -0.4
+speed_swerve_right.angular.z = radians(180)
+
 
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
 speed_stop.angular.z = 0.0
-
-
-
 
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
@@ -89,7 +92,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>70:
+        if highest>threshold_line:
             return 1
         else: 
             return 0
@@ -259,9 +262,9 @@ class AttackMain(smach.State):
         elif(prox_sensor.get_diff() <= -1):
             motor.set_speed(speed_veer_right)
         else:
-            motor.set_speed(speed_search_drive)
-
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+            motor.set_speed(speed_attack)
+        
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2: # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
@@ -288,13 +291,13 @@ class AttackCharge(smach.State):
         
         
         if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_ram_left)
+            motor.set_speed(speed_swerve_left)
         elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_ram_right)
+            motor.set_speed(speed_swerve_right)
         else:
             motor.set_speed(speed_ram)
         
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2: # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
@@ -361,7 +364,6 @@ def main():
                                transitions={'attack_finished_lost':'SEARCH',
                                             'attack_finished_line':'RECOVER',
                                             None:'terminate'})
-
 
     # Execute SMACH plan
     outcome = sm_main.execute()
