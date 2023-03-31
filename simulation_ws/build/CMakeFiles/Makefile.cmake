@@ -24,6 +24,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/edge_detection.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/robot_one_controller.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/robot_two_controller.py"
+  "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/sandbox_system.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/state_machine.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/variable_controller.py"
   "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/src/control_system/scripts/vc_caller.py"

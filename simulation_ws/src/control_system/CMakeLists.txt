@@ -164,6 +164,7 @@ include_directories(
    scripts/robot_two_controller.py
    scripts/variable_controller.py
    scripts/vc_caller.py
+   scripts/sandbox_system.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

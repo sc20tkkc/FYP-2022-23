@@ -76,3 +76,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/vc_caller.py")
 endif()
 
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/control_system" TYPE PROGRAM FILES "/home/csunix/sc20tkkc/FYP-2022-23/simulation_ws/build/control_system/catkin_generated/installspace/sandbox_system.py")
+endif()
+
