@@ -13,7 +13,7 @@ import math
 import random
 from os import path
 from sensor_msgs.msg import LaserScan, Range, Image
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, Twist
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Empty
 from gazebo_msgs.msg import ModelState
@@ -37,6 +37,11 @@ class WorldManager:
         self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_world', Empty)
         self.set_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
+        self.pub_one = rospy.Publisher("/robot1/cmd_vel", Twist, queue_size=1)
+        self.pub_two = rospy.Publisher("/robot2/cmd_vel", Twist, queue_size=1)
+        self.speed_stop = Twist()
+        self.speed_stop.linear.x = 0.0
+        self.speed_stop.angular.z = 0.0
         self.robot_one = 0
         self.robot_two = 0
         self.count_loss = 0
@@ -99,11 +104,17 @@ class WorldManager:
                 return False
         except Exception as e:
             pass
-
+    
+    def stop_robots(self):
+        self.pub_one.publish(self.speed_stop)
+        self.pub_two.publish(self.speed_stop)
+        
     def reset(self):
         self.pause()
-        self.robot_one.terminate()
-        self.robot_two.terminate()
+        # self.robot_one.terminate()
+        # self.robot_two.terminate()
+        self.robot_one.kill()
+        self.robot_two.kill()
         self.reset_proxy()
                 
         if self.count_rounds == 1:
@@ -116,6 +127,7 @@ class WorldManager:
 
 
     def start(self, solution):
+        self.stop_robots()
         self.unpause()
         cmd = robot_one_cmd.copy()
         cmd.append(json.dumps(physical_to_simulation(solution)))    # Converts solution to usable form and appends to command

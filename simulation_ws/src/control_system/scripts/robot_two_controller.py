@@ -65,12 +65,6 @@ speed_swerve_right = Twist()
 speed_swerve_right.linear.x = -0.4
 speed_swerve_right.angular.z = radians(180)
 
-
-speed_stop = Twist()
-speed_stop.linear.x = 0.0
-speed_stop.angular.z = 0.0
-
-
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
 # Seperate classes and instances for each seperate actuator and sensor to mimic arduino implementation
 
@@ -305,14 +299,8 @@ class AttackCharge(smach.State):
             return 'enemy_lost'
         else:
             return 'loop'
-
-def shutdown():
-    motor.set_speed(speed_stop)
-    rospy.sleep(1)  
-
+        
 def main():
-    rospy.on_shutdown(shutdown)
-    
     sm_main = smach.StateMachine(outcomes=['terminate'])
     
     # Open the container

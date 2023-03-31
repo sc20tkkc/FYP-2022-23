@@ -73,7 +73,7 @@ class States(Enum):
     RECOVER = 1
     ATTACK = 2
     
-State = States.SEARCH
+state = States.SEARCH
 
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
@@ -182,17 +182,17 @@ def time_in_state():
     return (time.time() - state_start_time) * 1000    
 
 def loop():
-    match state:
-        case States.SEARCH:
-            print("SEARCH")
-            state = States.RECOVER
-        case States.RECOVER:
-            print("RECOVER")
-            state = States.ATTACK
-        case States.ATTACK:
-            print("ATTACK")
-            state = States.SEARCH
-
+    global state
+    
+    if (state == States.SEARCH):
+        print("Search")
+        state = States.RECOVER
+    elif (state == States.RECOVER):
+        print("Recover")
+        state = States.ATTACK
+    elif (state == States.ATTACK):
+        print("Attack")
+        state = States.SEARCH
 
 if __name__ == '__main__':
     try:
