@@ -10,6 +10,7 @@ import numpy as np
 import time
 import json
 import math
+import random
 from os import path
 from sensor_msgs.msg import LaserScan, Range, Image
 from geometry_msgs.msg import Pose
@@ -17,6 +18,7 @@ from nav_msgs.msg import Odometry
 from std_srvs.srv import Empty
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.srv import SetModelState
+from tf.transformations import euler_from_quaternion
 
 
 # Absolute path of the launch_file
@@ -73,7 +75,8 @@ class WorldManager:
             odom = rospy.wait_for_message('/robot1/odom', Odometry, timeout=5)
             x = odom.pose.pose.position.x
             y = odom.pose.pose.position.y
-            if abs(x)>0.35 or abs(y)>0.35:
+            r = euler_from_quaternion([odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])[0]
+            if abs(x)>0.35 or abs(y)>0.35 or -((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6):
                 rospy.loginfo("Robot 1 Lost!")
                 self.count_loss +=1
                 self.count_rounds +=1
@@ -81,7 +84,6 @@ class WorldManager:
             else:
                 return False
         except Exception as e:
-            print(e)
             pass
         
     def check_robot_two(self):
@@ -89,7 +91,8 @@ class WorldManager:
             odom = rospy.wait_for_message('/robot2/odom', Odometry, timeout=5)
             x = odom.pose.pose.position.x
             y = odom.pose.pose.position.y
-            if abs(x)>0.35 or abs(y)>0.35:
+            r = euler_from_quaternion([odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])[0]
+            if abs(x)>0.35 or abs(y)>0.35 or (-((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6)):
                 rospy.loginfo("Robot 2 Lost!")
                 self.count_wins +=1
                 self.count_rounds +=1
@@ -97,7 +100,6 @@ class WorldManager:
             else:
                 return False
         except Exception as e:
-            print(e)
             pass
 
     def reset(self):
@@ -110,6 +112,7 @@ class WorldManager:
             self.place_robot('Robot1)', [0.15,-0.1,0.038,0])
         elif self.count_rounds == 2:
             self.place_robot('Robot2)', [-0.15,0.1,0.038,math.pi])
+            self.place_robot('Robot1)', [0.15,-0.1,0.038,0])
 
     def start(self, solution):
         self.unpause()
@@ -239,18 +242,14 @@ def physical_to_simulation(solution):
 def fitness_func(solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights) 
-    print(stats)
-    print(stat_weights)
-    print(fitness)
-    time.sleep(5)
     world_manager.reset_stats()
     return fitness
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 2 # Number of generations.
+num_generations = 1 # Number of generations.
 num_parents_mating = 2 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 5 # Number of solutions in the population.
+sol_per_pop = 3 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 last_fitness = 0
 
@@ -267,7 +266,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        fitness_func=fitness_function,
                        sol_per_pop=sol_per_pop, 
                        num_genes=num_genes,
-                       on_generation=callback_generation,
+                    #    on_generation=callback_generation,
                        gene_space=gene_space_state)
 
 if __name__ == '__main__':
@@ -276,34 +275,34 @@ if __name__ == '__main__':
         world_manager = WorldManager(launch_path)
         time.sleep(20)
 
-        
         # Running the GA to optimize the parameters of the function.
         ga_instance.run()
 
         # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
         ga_instance.plot_fitness()
 
-        # Returning the details of the best solution.
-        solution, solution_fitness, solution_idx = ga_instance.best_solution()
-        print("Parameters of the best solution : {solution}".format(solution=solution))
-        print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
-        print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
+        # # Returning the details of the best solution.
+        # solution, solution_fitness, solution_idx = ga_instance.best_solution()
+        # print("Parameters of the best solution : {solution}".format(solution=solution))
+        # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+        # print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
-        # prediction = np.sum(np.array(function_inputs)*solution)
-        # print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
+        # # prediction = np.sum(np.array(function_inputs)*solution)
+        # # print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
 
-        if ga_instance.best_solution_generation != -1:
-            print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
+        # if ga_instance.best_solution_generation != -1:
+        #     print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
-        # Saving the GA instance.
-        filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
-        ga_instance.save(filename=filename)
+        # # Saving the GA instance.
+        # filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
+        # ga_instance.save(filename=filename)
 
-        # Loading the saved GA instance.
-        loaded_ga_instance = pygad.load(filename=filename)
-        loaded_ga_instance.plot_fitness()
+        # # Loading the saved GA instance.
+        # loaded_ga_instance = pygad.load(filename=filename)
+        # loaded_ga_instance.plot_fitness()
         
         # Shutdown and clean up the opened programs and subprocesses
+        time.sleep(5)
         shutdown()
     except Exception as e:
         print(e)
