@@ -372,12 +372,11 @@ def main():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('state_machine_controller', anonymous=True)
+        rospy.init_node('robot_two_controller', anonymous=True)
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
         main()
-        # rospy.spin()
     except rospy.ROSInterruptException:
         pass
     
