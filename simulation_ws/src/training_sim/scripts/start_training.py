@@ -77,7 +77,6 @@ class WorldManager:
             y = odom.pose.pose.position.y
             r = euler_from_quaternion([odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])[0]
             if abs(x)>0.35 or abs(y)>0.35 or -((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6):
-                rospy.loginfo("Robot 1 Lost!")
                 self.count_loss +=1
                 self.count_rounds +=1
                 return True
@@ -93,7 +92,6 @@ class WorldManager:
             y = odom.pose.pose.position.y
             r = euler_from_quaternion([odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])[0]
             if abs(x)>0.35 or abs(y)>0.35 or (-((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6)):
-                rospy.loginfo("Robot 2 Lost!")
                 self.count_wins +=1
                 self.count_rounds +=1
                 return True
@@ -112,7 +110,10 @@ class WorldManager:
             self.place_robot('Robot1)', [0.15,-0.1,0.038,0])
         elif self.count_rounds == 2:
             self.place_robot('Robot2)', [-0.15,0.1,0.038,math.pi])
+        elif self.count_rounds == 3:
+            self.place_robot('Robot2)', [-0.15,0.1,0.038,math.pi])
             self.place_robot('Robot1)', [0.15,-0.1,0.038,0])
+
 
     def start(self, solution):
         self.unpause()
@@ -135,7 +136,7 @@ class WorldManager:
         
 def run_round(solution):
     started = 0
-    while (world_manager.get_count_rounds() < 3):
+    while (world_manager.get_count_rounds() < 4):
         if started == 0:
             started = 1
             world_manager.start(solution)
@@ -248,8 +249,8 @@ def fitness_func(solution, solution_idx):
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
 num_generations = 1 # Number of generations.
-num_parents_mating = 2 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 3 # Number of solutions in the population.
+num_parents_mating = 4 # Number of solutions to be selected as parents in the mating pool.
+sol_per_pop = 8 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 last_fitness = 0
 
@@ -266,7 +267,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        fitness_func=fitness_function,
                        sol_per_pop=sol_per_pop, 
                        num_genes=num_genes,
-                    #    on_generation=callback_generation,
+                       on_generation=callback_generation,
                        gene_space=gene_space_state)
 
 if __name__ == '__main__':
@@ -281,28 +282,25 @@ if __name__ == '__main__':
         # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
         ga_instance.plot_fitness()
 
-        # # Returning the details of the best solution.
+        # Returning the details of the best solution.
         # solution, solution_fitness, solution_idx = ga_instance.best_solution()
         # print("Parameters of the best solution : {solution}".format(solution=solution))
         # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
         # print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
-        # # prediction = np.sum(np.array(function_inputs)*solution)
-        # # print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
-
         # if ga_instance.best_solution_generation != -1:
         #     print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
-        # # Saving the GA instance.
-        # filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
-        # ga_instance.save(filename=filename)
+        # Saving the GA instance.
+        filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
+        ga_instance.save(filename=filename)
 
         # # Loading the saved GA instance.
         # loaded_ga_instance = pygad.load(filename=filename)
         # loaded_ga_instance.plot_fitness()
         
         # Shutdown and clean up the opened programs and subprocesses
-        time.sleep(5)
+        time.sleep(60)
         shutdown()
     except Exception as e:
         print(e)
