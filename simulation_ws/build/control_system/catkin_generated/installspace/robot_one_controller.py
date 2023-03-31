@@ -387,7 +387,6 @@ if __name__ == '__main__':
         prox_sensor = ProxSensor()
         motor = Motors()
         main()
-        rospy.spin()
     except rospy.ROSInterruptException:
         pass
     
