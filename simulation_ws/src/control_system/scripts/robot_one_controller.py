@@ -265,10 +265,10 @@ def attack():
             
             if prox_sensor.get_sum_mid() > threshold_proximity_ram or time_in_state() > time_stalemate:
                 if(prox_sensor.get_diff_mid() >= threshold_proximity_swerve):
-                    motor.set_speed(speed_ram_left)
+                    motor.set_speed(speed_swerve_left)
                 
                 elif(prox_sensor.get_diff_mid() <= -threshold_proximity_swerve):
-                    motor.set_speed(speed_ram_right)
+                    motor.set_speed(speed_swerve_right)
                 else:
                     motor.set_speed(speed_ram)
                     
