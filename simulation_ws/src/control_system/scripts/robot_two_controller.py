@@ -13,6 +13,8 @@ import smach_ros
 from math import radians
 import random
 import time
+import sys
+import json
 
 initial_loop = True
 state_start_time = time.time()
@@ -179,7 +181,6 @@ class Search(smach.State):
         self.spin_dir = 0
 
     def execute(self, userdata):
-        rospy.loginfo('Executing state Search')
         global initial_loop
 
         if initial_loop:
@@ -213,7 +214,6 @@ class Recover(smach.State):
         smach.State.__init__(self, outcomes=['recover_finished', 'loop'])
 
     def execute(self, userdata):
-        rospy.loginfo('Executing state Recover')
         global initial_loop
 
         if initial_loop:
@@ -221,24 +221,11 @@ class Recover(smach.State):
 
         motor.set_speed(speed_recover)
 
-        rospy.loginfo(time_in_state())
-        rospy.loginfo(time_recover)
         if(time_in_state() <= time_recover):
             return 'loop'
         else:
             reset_globals()
             return 'recover_finished'
-
-
-# # define state RecoverRotate
-# class RecoverRotate(smach.State):
-#     def __init__(self):
-#         smach.State.__init__(self, outcomes=['rotate_finished'])
-
-#     def execute(self, userdata):
-#         rospy.loginfo('Executing state RecoverRotate')
-#         return 'rotate_finished'
-
 
 # define state AttackMain
 class AttackMain(smach.State):
@@ -276,7 +263,7 @@ class AttackMain(smach.State):
 class AttackCharge(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'line'])
-
+        
     def execute(self, userdata):
         global initial_loop
         
@@ -314,22 +301,6 @@ def main():
         smach.StateMachine.add('RECOVER', Recover(),
                                transitions={'recover_finished':'SEARCH',
                                             'loop':'RECOVER'})
-
-        # # Create the sub RECOVER
-        # sm_recover = smach.StateMachine(outcomes=['recover_finished'])
-
-        # # Open the container
-        # with sm_recover:
-
-        #     # Add states to the container
-        #     smach.StateMachine.add('RECOVER_REVERSE', RecoverRerverse(), 
-        #                            transitions={'reverse_finished':'RECOVER_ROTATE'})
-        #     smach.StateMachine.add('RECOVER_ROTATE', RecoverRotate(), 
-        #                            transitions={'rotate_finished':'recover_finished'})
-
-        # smach.StateMachine.add('RECOVER', sm_recover,
-        #                        transitions={'recover_finished':'SEARCH'})
-        
         
         # Create the sub ATTACK
         sm_attack = smach.StateMachine(outcomes=['attack_finished_lost', 'attack_finished_line', None])
@@ -360,10 +331,11 @@ def main():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('robot_two_controller', anonymous=True)
+        rospy.init_node('robot_two_controller')
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
+        smach.set_loggers(rospy.logdebug, rospy.logwarn, rospy.logdebug, rospy.logerr)
         main()
     except rospy.ROSInterruptException:
         pass
