@@ -25,10 +25,13 @@ threshold_line = 50
 
 # Values decided by the simulation
 threshold_proximity_found = 1
-threshold_proximity_lost = 2
+threshold_proximity_lost = 0
+threshold_proximity_ram = 4
 time_stalemate = 3000
-time_spin_min = 1000
-time_spin_max = 2000
+time_spin_min = 500
+time_spin_max = 3000
+spin_time = 0
+spin_dir = 0
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
@@ -41,6 +44,9 @@ speed_search_drive.linear.x = -0.2
 
 speed_recover = Twist()
 speed_recover.linear.x = 0.2
+
+speed_attack= Twist()
+speed_attack.linear.x = 0.2
 
 speed_veer_left = Twist()
 speed_veer_left.linear.x = -0.2
@@ -155,10 +161,10 @@ class ProxSensor:
     def get_data(self):
         return([self.val_left, self.val_midleft, self.val_midright, self.val_right])
     
-    def get_sum(self):
+    def get_sum_mid(self):
         return self.val_midleft + self.val_midright
 
-    def get_diff(self):
+    def get_diff_mid(self):
         return self.val_midleft - self.val_midright
     
 class Motors:
@@ -183,26 +189,106 @@ def time_in_state():
 
 def loop():
     global state
+    global rate
+    while not rospy.is_shutdown():
+        if (state == States.SEARCH):
+            search_random()
+        elif (state == States.RECOVER):
+            recover()
+        elif (state == States.ATTACK):
+            attack()
+
+def search_random():
+    global initial_loop
+    global state
+    global spin_time
+    global spin_dir
     
-    if (state == States.SEARCH):
-        print("Search")
+    # If any of the line sensors come back with 1 meaning a line has been found
+    if line_sensor.get_data().count(1):
+        reset_globals()
         state = States.RECOVER
-    elif (state == States.RECOVER):
-        print("Recover")
+    # If either front proximity sensor value has reached the threshold the enemy has been found 
+    elif prox_sensor.get_data()[1] >= threshold_proximity_found or prox_sensor.get_data()[2] >= threshold_proximity_found:
+        reset_globals()
         state = States.ATTACK
-    elif (state == States.ATTACK):
-        print("Attack")
+    else:
+        if initial_loop:
+            initial_loop = False
+            # Since variable are randomised time_spin_min can be more than time_spin_max which can lead to errors
+            if time_spin_min < time_spin_max:
+                spin_time = random.randint(time_spin_min, time_spin_max)
+            else:
+                spin_time = random.randint(time_spin_max, time_spin_min)
+            spin_dir = random.randint(0, 1)
+            
+        if(time_in_state() <= spin_time):
+            if spin_dir:
+                motor.set_speed(speed_search_left)
+            else:
+                motor.set_speed(speed_search_right)
+        else:
+            motor.set_speed(speed_search_drive)
+
+
+def recover():
+    global initial_loop
+    global state
+    
+    if initial_loop:
+        initial_loop = False
+
+    motor.set_speed(speed_recover)
+
+    if(time_in_state() >= time_recover):
+        reset_globals()
         state = States.SEARCH
+
+def attack():
+        global initial_loop
+        global state
+
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() < 2:  # Enemy no longer in sight
+            reset_globals()
+            state = States.RECOVER
+            
+        # Checks readings of front two proximity sensors against threshold valuess
+        elif prox_sensor.get_sum_mid() <= 0:
+            reset_globals()
+            state = States.SEARCH
+            
+        else:
+            if initial_loop:
+                initial_loop = False
+            
+            if prox_sensor.get_sum_mid() > threshold_proximity_ram or time_in_state() > time_stalemate:
+                if(prox_sensor.get_diff_mid() >= 1):
+                    motor.set_speed(speed_ram_left)
+                
+                elif(prox_sensor.get_diff_mid() <= -1):
+                    motor.set_speed(speed_ram_right)
+                    
+                else:
+                    motor.set_speed(speed_ram)
+                    
+            else:
+                if(prox_sensor.get_diff_mid() >= 1):
+                    motor.set_speed(speed_veer_left)
+                    
+                elif(prox_sensor.get_diff_mid() <= -1):
+                    motor.set_speed(speed_veer_right)
+                    
+                else:
+                    motor.set_speed(speed_attack)
+
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('state_machine_controller', anonymous=True)
+        rospy.init_node('state_machine_controller')
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
-        rate = rospy.Rate(10)
-        while(1):
-            loop()
+        loop()
         
     except rospy.ROSInterruptException:
         pass
