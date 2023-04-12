@@ -285,7 +285,7 @@ def attack():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('state_machine_controller')
+        rospy.init_node('robot_one_controller')
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
