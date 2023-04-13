@@ -25,7 +25,7 @@ args = json.loads(args[0])
 
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 180
+threshold_line = 190
 
 # Values decided by the simulation
 # Thresholds that act affect state transitions
@@ -105,7 +105,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>50:
+        if highest>threshold_line:
             return 1
         else: 
             return 0
@@ -191,7 +191,6 @@ def time_in_state():
 
 def loop():
     global state
-    global rate
     while not rospy.is_shutdown():
         if (state == States.SEARCH):
             search_random()

@@ -19,15 +19,15 @@ state_start_time = time.time()
 # Temporary variables used to define strcuture of state machine
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 180
+threshold_line = 190
 
 # Values decided by the simulation
 threshold_proximity_found = 1
 threshold_proximity_lost = 0
 threshold_proximity_ram = 4
 time_stalemate = 3000
-time_spin_min = 500
-time_spin_max = 3000
+time_spin_min = 1000
+time_spin_max = 2500
 spin_time = 0
 spin_dir = 0
 
@@ -101,7 +101,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>50:
+        if highest>threshold_line:
             return 1
         else: 
             return 0
