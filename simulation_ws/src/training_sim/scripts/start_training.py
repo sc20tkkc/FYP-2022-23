@@ -28,7 +28,7 @@ robot_one_cmd = ["rosrun", "control_system", "robot_one_controller.py"]
 robot_two_cmd = ["rosrun", "control_system", "robot_two_controller.py"]
 
 # Weights for each statistic measured for fitness function
-stat_weights = np.array([500,-500,1,-1])
+stat_weights = np.array([500,-500,-120,1,-1])
 
 class WorldManager:
     def __init__(self, launchfile):
@@ -49,6 +49,7 @@ class WorldManager:
         self.odom_two = None
         self.count_loss = 0
         self.count_wins = 0 
+        self.count_draw = 0
         self.count_rounds = 0
         self.time_start = 0
         self.time_loss = 0
@@ -91,10 +92,15 @@ class WorldManager:
             y = self.odom_one.pose.pose.position.y
             r = euler_from_quaternion([self.odom_one.pose.pose.orientation.x, self.odom_one.pose.pose.orientation.y, self.odom_one.pose.pose.orientation.z, self.odom_one.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or -((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6):
-                print("Lose")
+                # print("Lose")
                 self.count_loss +=1
                 self.count_rounds +=1
                 self.time_loss += time.time() - self.time_start
+                self.reset()
+                return True
+            elif time.time() - self.time_start > 60:
+                self.count_draw += 1
+                self.count_rounds +=1
                 self.reset()
                 return True
             else:
@@ -108,10 +114,15 @@ class WorldManager:
             y = self.odom_two.pose.pose.position.y
             r = euler_from_quaternion([self.odom_two.pose.pose.orientation.x, self.odom_two.pose.pose.orientation.y, self.odom_two.pose.pose.orientation.z, self.odom_two.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or (-((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/8)):
-                print("Win")
+                # print("Win")
                 self.count_wins +=1
                 self.count_rounds +=1
                 self.time_win += time.time() - self.time_start
+                self.reset()
+                return True
+            elif time.time() - self.time_start > 60:
+                self.count_draw += 1
+                self.count_rounds +=1
                 self.reset()
                 return True
             else:
@@ -152,7 +163,7 @@ class WorldManager:
         self.robot_two = subprocess.Popen(robot_two_cmd)
         
     def get_stats(self):
-        return[self.count_wins,self.count_loss,self.time_loss,self.time_win]
+        return[self.count_wins,self.count_loss,self.count_draw,self.time_loss,self.time_win]
     
     def get_count_rounds(self):
         return self.count_rounds
@@ -160,6 +171,7 @@ class WorldManager:
     def reset_stats(self):
         self.count_loss = 0
         self.count_wins = 0
+        self.count_draw = 0
         self.count_rounds = 0
         self.time_win = 0
         self.time_loss = 0
@@ -281,7 +293,7 @@ def fitness_func(solution, solution_idx):
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 2 # Number of generations.
+num_generations = 50 # Number of generations.
 num_parents_mating = 4 # Number of solutions to be selected as parents in the mating pool.
 sol_per_pop = 8 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
