@@ -11,6 +11,7 @@ import time
 import json
 import math
 import random
+import logging
 from os import path
 from sensor_msgs.msg import LaserScan, Range, Image
 from geometry_msgs.msg import Pose, Twist
@@ -29,6 +30,26 @@ robot_two_cmd = ["rosrun", "control_system", "robot_two_controller.py"]
 
 # Weights for each statistic measured for fitness function
 stat_weights = np.array([500,-500,-120,1,-1])
+
+# Setting up the logger
+level = logging.DEBUG
+name = 'logfile.txt'
+
+logger = logging.getLogger(name)
+logger.setLevel(level)
+
+file_handler = logging.FileHandler(name,'a+','utf-8')
+file_handler.setLevel(logging.DEBUG)
+file_format = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+file_handler.setFormatter(file_format)
+logger.addHandler(file_handler)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_format = logging.Formatter('%(message)s')
+console_handler.setFormatter(console_format)
+logger.addHandler(console_handler)
+
 
 class WorldManager:
     def __init__(self, launchfile):
@@ -285,33 +306,34 @@ def physical_to_simulation(solution):
 # Used to call the robot control system when each solution is passed
 def fitness_func(solution, solution_idx):
     stats = np.array(run_round(solution))
-    print(stats)
-    fitness = np.sum(stats * stat_weights) 
-    print(fitness)
+    fitness = np.sum(stats * stat_weights)
+    # print(fitness)
+    # print(solution)
     world_manager.reset_stats()
     return fitness
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 50 # Number of generations.
-num_parents_mating = 4 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 8 # Number of solutions in the population.
+num_generations = 100 # Number of generations.
+num_parents_mating = 6 # Number of solutions to be selected as parents in the mating pool.
+sol_per_pop = 12 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
 keep_parents = 1
 crossover_type = "single_point"
+crossover_probability=0.4
 mutation_type = "random"
-mutation_percent_genes = 10
+mutation_percent_genes = 20
 last_fitness = 0
 save_best_solutions=True
 
-
-def callback_generation(ga_instance):
+last_fitness = 0
+def on_generation(ga_instance):
     global last_fitness
-    print("Generation = {generation}".format(generation=ga_instance.generations_completed))
-    print("Fitness    = {fitness}".format(fitness=ga_instance.best_solution()[1]))
-    print("Change     = {change}".format(change=ga_instance.best_solution()[1] - last_fitness))
-    last_fitness = ga_instance.best_solution()[1]
+    ga_instance.logger.info("Generation = {generation}".format(generation=ga_instance.generations_completed))
+    ga_instance.logger.info("Fitness    = {fitness}".format(fitness=ga_instance.best_solution(pop_fitness=ga_instance.last_generation_fitness)[1]))
+    ga_instance.logger.info("Change     = {change}".format(change=ga_instance.best_solution(pop_fitness=ga_instance.last_generation_fitness)[1] - last_fitness))
+    last_fitness = ga_instance.best_solution(pop_fitness=ga_instance.last_generation_fitness)[1]
 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 ga_instance = pygad.GA(num_generations=num_generations,
@@ -319,14 +341,16 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        fitness_func=fitness_function,
                        sol_per_pop=sol_per_pop, 
                        num_genes=num_genes,
-                       on_generation=callback_generation,
+                       on_generation=on_generation,
                        gene_space=gene_space_state,
                        parent_selection_type=parent_selection_type,
                        keep_parents=keep_parents,
                        crossover_type=crossover_type,
+                       crossover_probability=crossover_probability,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                       save_best_solutions=save_best_solutions)
+                       save_best_solutions=save_best_solutions,
+                       logger=logger)
 
 if __name__ == '__main__':
     try:
@@ -337,25 +361,25 @@ if __name__ == '__main__':
         # Running the GA to optimize the parameters of the function.
         ga_instance.run()
 
+        # Print our the summary of parameters
+        ga_instance.summary()
+        
         # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
         ga_instance.plot_fitness()
-
+        
+        ga_instance.plot_genes()
+        
+        ga_instance.plot_new_solution_rate()
+        
         # Returning the details of the best solution.
         solution, solution_fitness, solution_idx = ga_instance.best_solution()
-        print("Parameters of the best solution : {solution}".format(solution=solution))
-        print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
-        print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
+        ga_instance.logger.info("Parameters of the best solution : {solution}".format(solution=solution))
+        ga_instance.logger.info("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+        ga_instance.logger.info("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
         if ga_instance.best_solution_generation != -1:
-            print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
+            ga_instance.logger.info("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
         
-        # # Saving the GA instance.
-        # filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
-        # ga_instance.save(filename=filename)
-    
-        # # Loading the saved GA instance.
-        # loaded_ga_instance = pygad.load(filename=filename)
-        # loaded_ga_instance.plot_fitness()
         
         # Shutdown and clean up the opened programs and subprocesses
         shutdown()
