@@ -304,7 +304,7 @@ def physical_to_simulation(solution):
 
 # Calculating the fitness value of each solution in the current population.
 # Used to call the robot control system when each solution is passed
-def fitness_func(solution, solution_idx):
+def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
     # print(fitness)
@@ -314,9 +314,9 @@ def fitness_func(solution, solution_idx):
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 100 # Number of generations.
-num_parents_mating = 6 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 12 # Number of solutions in the population.
+num_generations = 1 # Number of generations.
+num_parents_mating = 2 # Number of solutions to be selected as parents in the mating pool.
+sol_per_pop = 4 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
 keep_parents = 1
@@ -326,6 +326,7 @@ mutation_type = "random"
 mutation_percent_genes = 20
 last_fitness = 0
 save_best_solutions=True
+save_solutions=True
 
 last_fitness = 0
 def on_generation(ga_instance):
@@ -350,6 +351,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
                        save_best_solutions=save_best_solutions,
+                       save_solutions=save_solutions,
                        logger=logger)
 
 if __name__ == '__main__':
