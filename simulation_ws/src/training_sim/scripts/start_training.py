@@ -382,6 +382,9 @@ if __name__ == '__main__':
         if ga_instance.best_solution_generation != -1:
             ga_instance.logger.info("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
         
+        
+        ga_instance.logger.info(ga_instance.best_solutions)
+        
         logger.handlers.clear()
         
         # Shutdown and clean up the opened programs and subprocesses
