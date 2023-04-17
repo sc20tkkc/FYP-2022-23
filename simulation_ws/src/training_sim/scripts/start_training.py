@@ -369,8 +369,11 @@ if __name__ == '__main__':
         # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
         ga_instance.plot_fitness()
         
-        ga_instance.plot_genes()
-        
+        ga_instance.plot_genes(graph_type="plot", solutions="best")
+        ga_instance.plot_genes(graph_type="boxplot", solutions="best")
+        ga_instance.plot_genes(graph_type="boxplot", solutions="all")
+        ga_instance.plot_genes(graph_type="histogram", solutions="best")
+                
         ga_instance.plot_new_solution_rate()
         
         # Returning the details of the best solution.
