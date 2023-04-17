@@ -386,9 +386,13 @@ if __name__ == '__main__':
             ga_instance.logger.info("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
         
         best_solutions = ga_instance.best_solutions.tolist()
+        solutions = ga_instance.solutions
         
         for i in range(len(best_solutions)):
             ga_instance.logger.info("Best parameters for generation {generation_num}: {solution}".format(generation_num=i, solution=best_solutions[i]))
+        
+        for i in range(len(solutions)):
+            ga_instance.logger.info("Solution {solution_num} from generation {generation_num}: {solution}".format(generation_num=i//sol_per_pop, solution_num=i%sol_per_pop, solution=solutions[i]))
         
         logger.handlers.clear()
         

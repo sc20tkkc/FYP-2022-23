@@ -8,68 +8,108 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan, Range, Image
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Empty
-import smach
-import smach_ros
 from math import radians
 import random
 import time
+import sys
+import json
 from enum import unique, Enum
 
 initial_loop = True
 state_start_time = time.time()
 
-# Temporary variables used to define strcuture of state machine
+# Converts wheel speeds used in physical robot to linear and angular velocities for simulation control system
+def velocity_conversion(left_output, right_output):
+    # Conversion constant specific to Zumo32U4 with 100:1 HP Motors
+    constant_conversion = 0.00125
+    constant_distance = 0.0877 
+    velocity_left = left_output * constant_conversion
+    velocity_right = right_output * constant_conversion
+    velocity_linear = (velocity_left + velocity_right) / 2
+    velocity_angular = (velocity_left - velocity_right) / constant_distance
+    
+    return[velocity_linear, velocity_angular]
+
+# Converts values used in the physical robot to values suitable for the simulation
+def physical_to_simulation(solution):
+    solution_list = solution
+    
+    index_linear = [0,2,10,16]
+    index_angular = [3,4,12,13,18,19]
+    index_other = [1,5,6,7,8,9,11,14,15,17]
+    
+    args = []
+    i=0
+    
+    while i < len(solution_list):
+        if i in index_linear:
+            # If solely linear velocity convert to appropriate linear velocty and append to list
+            args.append(velocity_conversion(solution_list[i],solution_list[i])[0])
+        elif i in index_other:
+            # If a time or threshold append as is
+            args.append(solution_list[i])
+        else:
+            # If a mix of linear and angular convert to appropriate velocities and extend by [linear,angular]
+            args.extend(velocity_conversion(solution_list[i],solution_list[i+1]))
+            i+=1
+        i+=1
+    
+    return args
+
+# Initialise all the values passed through by the genetic algorithm
+# There has to be a better way to do this
+args = [-3.250e+02, 8.460e+02, 4.100e+01, 4.400e+01, 3.240e+02, 0.000e+00, 2.425e+03, 3.090e+02, 7.000+00, 3.000e+00, 5.400e+01, 2.000e+00, 1.290e+02, 2.400e+01, 4.711e+03, 6.000e+00, 3.280e+02, 4.000e+00, 1.910e+02, 2.170e+02]
+args = physical_to_simulation(args)
+
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 50
+threshold_line = 190
 
 # Values decided by the simulation
-threshold_proximity_found = 1
-threshold_proximity_lost = 0
-threshold_proximity_ram = 4
-time_stalemate = 3000
-time_spin_min = 500
-time_spin_max = 3000
-spin_time = 0
-spin_dir = 0
+# Thresholds that act affect state transitions
+threshold_proximity_found = args[9]
+threshold_proximity_lost = args[8]
+threshold_proximity_ram = args[15]
+threshold_proximity_veer = args[11]
+threshold_proximity_swerve = args[17]
+
+# Predfined times that are determined by the simulation
+time_stalemate = args[14]
+time_spin_min = args[6]
+time_spin_max = args[7]
+time_recover = args[1]
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
-speed_search_left.angular.z = -radians(270)
+speed_search_left.angular.z = -args[4]
 speed_search_right = Twist()
-speed_search_right.angular.z = radians(270)
+speed_search_right.angular.z = args[4]
 
 speed_search_drive = Twist()
-speed_search_drive.linear.x = -0.2
+speed_search_drive.linear.x = -args[3]
 
 speed_recover = Twist()
-speed_recover.linear.x = 0.2
+speed_recover.linear.x = -args[0]
 
 speed_attack= Twist()
-speed_attack.linear.x = 0.2
+speed_attack.linear.x = -args[10]
 
 speed_veer_left = Twist()
-speed_veer_left.linear.x = -0.2
-speed_veer_left.angular.z = -radians(180)
+speed_veer_left.linear.x = -args[12]
+speed_veer_left.angular.z = -args[13]
 speed_veer_right = Twist()
-speed_veer_right.linear.x = -0.2
-speed_veer_right.angular.z = radians(180)
+speed_veer_right.linear.x = -args[12]
+speed_veer_right.angular.z = args[13]
 
 speed_ram = Twist()
-speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
+speed_ram.linear.x = -args[16]
 
-speed_stop = Twist()
-speed_stop.linear.x = 0.0
-speed_stop.angular.z = 0.0
-
-# Predfined times that are determined by the simulation
-time_recover = 1000
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -args[18]
+speed_swerve_left.angular.z = -args[19]
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -args[18]
+speed_swerve_right.angular.z = args[19]
 
 
 # Define and initialise state
@@ -103,7 +143,7 @@ class LineSensor:
         for dats in data.data:
             if int(dats)>highest:
                 highest = int(dats)
-        if highest>50:
+        if highest>threshold_line:
             return 1
         else: 
             return 0
@@ -189,7 +229,6 @@ def time_in_state():
 
 def loop():
     global state
-    global rate
     while not rospy.is_shutdown():
         if (state == States.SEARCH):
             search_random()
@@ -248,12 +287,12 @@ def attack():
         global initial_loop
         global state
 
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() < 2:  # Enemy no longer in sight
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() <= threshold_proximity_lost:  # Enemy no longer in sight
             reset_globals()
             state = States.RECOVER
             
         # Checks readings of front two proximity sensors against threshold valuess
-        elif prox_sensor.get_sum_mid() <= 0:
+        elif prox_sensor.get_sum_mid() <= threshold_proximity_lost :
             reset_globals()
             state = States.SEARCH
             
@@ -262,20 +301,19 @@ def attack():
                 initial_loop = False
             
             if prox_sensor.get_sum_mid() > threshold_proximity_ram or time_in_state() > time_stalemate:
-                if(prox_sensor.get_diff_mid() >= 1):
-                    motor.set_speed(speed_ram_left)
+                if(prox_sensor.get_diff_mid() >= threshold_proximity_swerve):
+                    motor.set_speed(speed_swerve_left)
                 
-                elif(prox_sensor.get_diff_mid() <= -1):
-                    motor.set_speed(speed_ram_right)
-                    
+                elif(prox_sensor.get_diff_mid() <= -threshold_proximity_swerve):
+                    motor.set_speed(speed_swerve_right)
                 else:
                     motor.set_speed(speed_ram)
                     
             else:
-                if(prox_sensor.get_diff_mid() >= 1):
+                if(prox_sensor.get_diff_mid() >= threshold_proximity_veer):
                     motor.set_speed(speed_veer_left)
                     
-                elif(prox_sensor.get_diff_mid() <= -1):
+                elif(prox_sensor.get_diff_mid() <= -threshold_proximity_veer):
                     motor.set_speed(speed_veer_right)
                     
                 else:
@@ -284,7 +322,7 @@ def attack():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('state_machine_controller')
+        rospy.init_node('robot_one_controller')
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
