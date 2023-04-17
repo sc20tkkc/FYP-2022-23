@@ -314,9 +314,9 @@ def fitness_func(ga_instance, solution, solution_idx):
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 2 # Number of generations.
-num_parents_mating = 2 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 4 # Number of solutions in the population.
+num_generations = 100 # Number of generations.
+num_parents_mating = 10 # Number of solutions to be selected as parents in the mating pool.
+sol_per_pop = 20 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
 keep_parents = 1
