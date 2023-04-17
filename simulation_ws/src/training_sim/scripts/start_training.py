@@ -314,9 +314,9 @@ def fitness_func(ga_instance, solution, solution_idx):
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 100 # Number of generations.
-num_parents_mating = 6 # Number of solutions to be selected as parents in the mating pool.
-sol_per_pop = 12 # Number of solutions in the population.
+num_generations = 2 # Number of generations.
+num_parents_mating = 2 # Number of solutions to be selected as parents in the mating pool.
+sol_per_pop = 4 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
 keep_parents = 1
@@ -382,8 +382,10 @@ if __name__ == '__main__':
         if ga_instance.best_solution_generation != -1:
             ga_instance.logger.info("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
         
+        best_solutions = ga_instance.best_solutions.tolist()
         
-        ga_instance.logger.info(ga_instance.best_solutions)
+        for i in range(len(best_solutions)):
+            ga_instance.logger.info("Best parameters for generation {generation_num}: {solution}".format(generation_num=i, solution=best_solutions[i]))
         
         logger.handlers.clear()
         
