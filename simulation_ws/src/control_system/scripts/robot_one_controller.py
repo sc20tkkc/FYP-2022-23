@@ -48,7 +48,7 @@ speed_search_right = Twist()
 speed_search_right.angular.z = args[4]
 
 speed_search_drive = Twist()
-speed_search_drive.linear.x = -args[3]
+speed_search_drive.linear.x = -args[2]
 
 speed_recover = Twist()
 speed_recover.linear.x = -args[0]

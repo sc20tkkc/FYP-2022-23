@@ -113,7 +113,7 @@ class WorldManager:
             y = self.odom_one.pose.pose.position.y
             r = euler_from_quaternion([self.odom_one.pose.pose.orientation.x, self.odom_one.pose.pose.orientation.y, self.odom_one.pose.pose.orientation.z, self.odom_one.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or -((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6):
-                # print("Lose")
+                print("Lose")
                 self.count_loss +=1
                 self.count_rounds +=1
                 self.time_loss += time.time() - self.time_start
@@ -135,7 +135,7 @@ class WorldManager:
             y = self.odom_two.pose.pose.position.y
             r = euler_from_quaternion([self.odom_two.pose.pose.orientation.x, self.odom_two.pose.pose.orientation.y, self.odom_two.pose.pose.orientation.z, self.odom_two.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or (-((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/8)):
-                # print("Win")
+                print("Win")
                 self.count_wins +=1
                 self.count_rounds +=1
                 self.time_win += time.time() - self.time_start
@@ -162,14 +162,14 @@ class WorldManager:
         self.robot_two.kill()
         self.stop_robots()
         self.reset_proxy()
-        time.sleep(1)
+        time.sleep(2)
         self.pause()
                 
-        if self.count_rounds == 1:
+        if self.count_rounds == 1 or self.count_rounds == 5:
             self.place_robot('Robot1)', [0.20,-0.1,0.038,0])
-        elif self.count_rounds == 2:
+        elif self.count_rounds == 2 or self.count_rounds == 6:
             self.place_robot('Robot2)', [-0.20,0.1,0.038,math.pi])
-        elif self.count_rounds == 3:
+        elif self.count_rounds == 3 or self.count_rounds == 7:
             self.place_robot('Robot2)', [-0.15,0.1,0.038,math.pi])
             self.place_robot('Robot1)', [0.15,-0.1,0.038,0])
 
@@ -200,7 +200,7 @@ class WorldManager:
         
 def run_round(solution):
     started = 0
-    while (world_manager.get_count_rounds() < 4):
+    while (world_manager.get_count_rounds() < 8):
         if started == 0:
             started = 1
             world_manager.start(solution)
@@ -260,7 +260,7 @@ Defines the ranges of values that each part of the soluation can take seperated 
  threshold_proximity_ram, speed_ram, threshold_proximity_swerve, speed_swerve_low, speed_swerve_high]
 """
 gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 5001, 'step': 1},
-                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
+                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1},, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
                     {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':5001, 'step': 1},
                     {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}]
 
@@ -281,8 +281,9 @@ def physical_to_simulation(solution):
     solution_list = solution.tolist()
     
     index_linear = [0,2,10,16]
-    index_angular = [3,4,12,13,18,19]
-    index_other = [1,5,6,7,8,9,11,14,15,17]
+    index_mix = [12,13,18,19]
+    index_angular = [4]
+    index_other = [1,3,5,6,7,8,9,11,14,15,17]
     
     args = []
     i=0
@@ -294,6 +295,9 @@ def physical_to_simulation(solution):
         elif i in index_other:
             # If a time or threshold append as is
             args.append(solution_list[i])
+        elif i in index_angular:
+            # If solely an angular velocity
+            args.extend(velocity_conversion(solution_list[i],-solution_list[i]))
         else:
             # If a mix of linear and angular convert to appropriate velocities and extend by [linear,angular]
             args.extend(velocity_conversion(solution_list[i],solution_list[i+1]))
@@ -307,8 +311,8 @@ def physical_to_simulation(solution):
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
-    # print(fitness)
-    # print(solution)
+    print(fitness)
+    print(solution)
     world_manager.reset_stats()
     return fitness
 
@@ -319,11 +323,11 @@ num_parents_mating = 10 # Number of solutions to be selected as parents in the m
 sol_per_pop = 20 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
-keep_parents = 1
+keep_parents = 0
 crossover_type = "two_points"
 crossover_probability=0.7
 mutation_type = "random"
-mutation_percent_genes = 20
+mutation_percent_genes = 10
 last_fitness = 0
 save_best_solutions=True
 save_solutions=True

@@ -22,7 +22,7 @@ state_start_time = time.time()
 def velocity_conversion(left_output, right_output):
     # Conversion constant specific to Zumo32U4 with 100:1 HP Motors
     constant_conversion = 0.00125
-    constant_distance = 0.0877 
+    constant_distance = 0.0877
     velocity_left = left_output * constant_conversion
     velocity_right = right_output * constant_conversion
     velocity_linear = (velocity_left + velocity_right) / 2
@@ -58,7 +58,7 @@ def physical_to_simulation(solution):
 
 # Initialise all the values passed through by the genetic algorithm
 # There has to be a better way to do this
-args = [-3.250e+02, 8.460e+02, 4.100e+01, 4.400e+01, 3.240e+02, 0.000e+00, 2.425e+03, 3.090e+02, 7.000+00, 3.000e+00, 5.400e+01, 2.000e+00, 1.290e+02, 2.400e+01, 4.711e+03, 6.000e+00, 3.280e+02, 4.000e+00, 1.910e+02, 2.170e+02]
+args = [-9.0, 4846.0, 262.0, 375.0, 111.0, 0.0, 112.0, 4063.0, 1.0, 4.0, 364.0, 4.0, 271.0, 17.0, 3442.0, 5.0, 374.0, 4.0, 303.0, 66.0]
 args = physical_to_simulation(args)
 
 # Hard coded values used to mimic robot's behaviour 
@@ -317,7 +317,7 @@ def attack():
                     motor.set_speed(speed_veer_right)
                     
                 else:
-                    motor.set_speed(speed_attack)
+                    motor.set_speed(speed_attack)c
 
 
 if __name__ == '__main__':
