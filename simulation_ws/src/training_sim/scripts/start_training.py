@@ -113,7 +113,7 @@ class WorldManager:
             y = self.odom_one.pose.pose.position.y
             r = euler_from_quaternion([self.odom_one.pose.pose.orientation.x, self.odom_one.pose.pose.orientation.y, self.odom_one.pose.pose.orientation.z, self.odom_one.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or -((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/6):
-                print("Lose")
+                # print("Lose")
                 self.count_loss +=1
                 self.count_rounds +=1
                 self.time_loss += time.time() - self.time_start
@@ -135,7 +135,7 @@ class WorldManager:
             y = self.odom_two.pose.pose.position.y
             r = euler_from_quaternion([self.odom_two.pose.pose.orientation.x, self.odom_two.pose.pose.orientation.y, self.odom_two.pose.pose.orientation.z, self.odom_two.pose.pose.orientation.w])[0]
             if abs(x)>0.36 or abs(y)>0.36 or (-((math.pi/2) + math.pi/8) <= r <=  -((math.pi/2) - math.pi/8)):
-                print("Win")
+                # print("Win")
                 self.count_wins +=1
                 self.count_rounds +=1
                 self.time_win += time.time() - self.time_start
@@ -260,7 +260,7 @@ Defines the ranges of values that each part of the soluation can take seperated 
  threshold_proximity_ram, speed_ram, threshold_proximity_swerve, speed_swerve_low, speed_swerve_high]
 """
 gene_space_state = [{'low':-401, 'high': 0, 'step': 1}, {'low': 0, 'high': 5001, 'step': 1},
-                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1},, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
+                    {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high': 401, 'step': 1}, {'low': 0, 'high':1, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':5001, 'step': 1}, {'low': 0, 'high':13, 'step': 1},
                     {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':5001, 'step': 1},
                     {'low': 0, 'high':13, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':7, 'step': 1}, {'low': 0, 'high':401, 'step': 1}, {'low': 0, 'high':401, 'step': 1}]
 
@@ -311,8 +311,8 @@ def physical_to_simulation(solution):
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
-    print(fitness)
-    print(solution)
+    # print(fitness)
+    # print(solution)
     world_manager.reset_stats()
     return fitness
 
