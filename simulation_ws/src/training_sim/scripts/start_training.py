@@ -309,7 +309,6 @@ def physical_to_simulation(solution):
 # Calculating the fitness value of each solution in the current population.
 # Used to call the robot control system when each solution is passed
 def fitness_func(ga_instance, solution, solution_idx):
-    print(solution)
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
     # print(fitness)
