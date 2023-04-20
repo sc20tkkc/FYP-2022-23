@@ -297,7 +297,7 @@ def physical_to_simulation(solution):
             args.append(solution_list[i])
         elif i in index_angular:
             # If solely an angular velocity
-            args.extend(velocity_conversion(solution_list[i],-solution_list[i]))
+            args.append(velocity_conversion(solution_list[i],-solution_list[i])[1])
         else:
             # If a mix of linear and angular convert to appropriate velocities and extend by [linear,angular]
             args.extend(velocity_conversion(solution_list[i],solution_list[i+1]))
@@ -309,6 +309,7 @@ def physical_to_simulation(solution):
 # Calculating the fitness value of each solution in the current population.
 # Used to call the robot control system when each solution is passed
 def fitness_func(ga_instance, solution, solution_idx):
+    print(solution)
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
     # print(fitness)
