@@ -200,7 +200,7 @@ class WorldManager:
         
 def run_round(solution):
     started = 0
-    while (world_manager.get_count_rounds() < 8):
+    while (world_manager.get_count_rounds() < 8:
         if started == 0:
             started = 1
             world_manager.start(solution)
@@ -318,12 +318,12 @@ def fitness_func(ga_instance, solution, solution_idx):
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
 num_generations = 100 # Number of generations.
-num_parents_mating = 10 # Number of solutions to be selected as parents in the mating pool.
+num_parents_mating = 8 # Number of solutions to be selected as parents in the mating pool.
 sol_per_pop = 20 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
-keep_parents = 0
-keep_elitism = 0
+keep_parents = 2
+# keep_elitism = 0
 crossover_type = "two_points"
 crossover_probability=0.7
 mutation_type = "random"
@@ -350,7 +350,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        gene_space=gene_space_state,
                        parent_selection_type=parent_selection_type,
                        keep_parents=keep_parents,
-                       keep_elitism=keep_elitism,
+                    #    keep_elitism=keep_elitism,
                        crossover_type=crossover_type,
                        crossover_probability=crossover_probability,
                        mutation_type=mutation_type,
