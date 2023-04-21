@@ -26,33 +26,32 @@ enum class State : uint8_t
 };
 
 
-// enum class Direction : uint8_t
-// {
-//   directionLeft,
-//   directionRight,
-// };
+enum class Direction : uint8_t
+{
+  directionLeft,
+  directionRight,
+};
 
 // Thresholds for transition conditions
-const uint16_t thresholdFound = 4;
-const uint16_t thresholdLost = 2;
-const uint16_t thresholdRam = 4;
-const uint16_t thresholdVeer = 2;
-const uint16_t thresholdSwerve = 2;
+const int16_t thresholdFound = 2;
+const int16_t thresholdLost = 0;
+const int16_t thresholdRam = 6;
+const int16_t thresholdVeer = 4;
+const int16_t thresholdSwerve = 4;
 
 // Arguements determined by the simulation GA can be granularised
-const uint16_t speedSearchSpin = 200;
-const uint16_t speedSearchDrive = 200;
-const uint16_t speedRecover = -200;
-const uint16_t speedAttack = 300;
-const uint16_t speedVeerLow = 290;
-const uint16_t speedVeerHigh = 310;
-const uint16_t speedRam = 390;
-const uint16_t speedSwerveLow = 380;
-const uint16_t speedSwerveHigh = 400;
-
+const int16_t speedSearchSpin = 200;
+const int16_t speedSearchDrive = 200;
+const int16_t speedRecover = -200;
+const int16_t speedAttack = 100;
+const int16_t speedVeerLow = 0;
+const int16_t speedVeerHigh = 100;
+const int16_t speedRam = 400;
+const int16_t speedSwerveLow = 0;
+const int16_t speedSwerveHigh = 400;
 
 // Timings that can be determined by simulation
-const uint16_t timeStalemate = 800;
+const uint16_t timeStalemate = 2000;
 const uint16_t timeSpinMin = 1000;
 const uint16_t timeSpinMax = 2000;
 const uint16_t timeRecover = 750;
@@ -69,7 +68,7 @@ bool displayCleared;
 uint16_t spinTime = random(timeSpinMin, timeSpinMax);
 
 // Direction robot should look if losing track of enemy
-// Direction scanDir = directionLeft;
+Direction searchDirection = Direction::directionLeft;
 
 // Time, in milliseconds that we entered the current top-level state
 uint16_t stateStartTime;
@@ -101,7 +100,7 @@ void loop()
         {
           initialLoop = false;
           display.print(F("Press A"));
-        }
+        } 
 
       if(buttonPressed)
       {
@@ -180,7 +179,7 @@ void loop()
       else
       {
         // Randomise the direction
-        if(spinTime % 2)
+        if(searchDirection == Direction::directionRight)
         {
           motors.setSpeeds(speedSearchSpin, -speedSearchSpin);
         }
@@ -209,41 +208,46 @@ void loop()
       }
 
       proxSensors.read();
-      uint8_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
-      int8_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
-      
-      if (sum >= thresholdRam || timeInState() > timeStalemate)
-      {
-        if (diff >= thresholdSwerve)
-        {
-          motors.setSpeeds(speedVeerHigh, speedVeerLow);
-        }
-        else if (diff <= -thresholdSwerve)
-        {
-          motors.setSpeeds(speedVeerLow, speedVeerHigh);
-        }
-        else
-        {
-          motors.setSpeeds(speedRam, speedRam);
-        }
-      }
-      else if (sum <= thresholdLost)
+      int16_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
+      int16_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
+      Serial.println(diff);
+      if (sum <= thresholdLost)
       {
         switchState(State::stateSearch);
       }
-      else
+      else if (timeInState() >= timeStalemate || sum >= thresholdRam) 
       {
-        if (diff >= thresholdVeer)
+        if (diff >= thresholdSwerve)
         {
           motors.setSpeeds(speedSwerveHigh, speedSwerveLow);
+          searchDirection = Direction::directionRight;
         }
-        else if (diff <= -thresholdVeer)
+        else if (diff <= -thresholdSwerve)
         {
           motors.setSpeeds(speedSwerveLow, speedSwerveHigh);
+          searchDirection = Direction::directionLeft;
         }
         else
         {
-          motors.setSpeeds(speedAttack, speedAttack);
+          motors.setSpeeds(speedRam,speedRam);
+        }
+      } 
+      else 
+      {
+        if (diff >= thresholdVeer)
+        {
+          motors.setSpeeds(speedVeerHigh, speedVeerLow);
+          searchDirection = Direction::directionRight;
+        }
+        Serial.println(diff <= -thresholdVeer);
+        if (diff <= -thresholdVeer)
+        {
+          motors.setSpeeds(speedVeerLow, speedVeerHigh);
+          searchDirection = Direction::directionLeft;
+        }
+        else
+        {
+          motors.setSpeeds(speedAttack,speedAttack);
         }
       }
       break;
