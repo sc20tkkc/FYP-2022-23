@@ -311,8 +311,7 @@ def physical_to_simulation(solution):
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights)
-    # print(fitness)
-    # print(solution)
+    ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
     world_manager.reset_stats()
     return fitness
 
@@ -324,6 +323,7 @@ sol_per_pop = 20 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
 keep_parents = 0
+keep_elitism = 0
 crossover_type = "two_points"
 crossover_probability=0.7
 mutation_type = "random"
@@ -350,6 +350,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        gene_space=gene_space_state,
                        parent_selection_type=parent_selection_type,
                        keep_parents=keep_parents,
+                       keep_elitism=keep_elitism,
                        crossover_type=crossover_type,
                        crossover_probability=crossover_probability,
                        mutation_type=mutation_type,
@@ -391,12 +392,14 @@ if __name__ == '__main__':
         
         best_solutions = ga_instance.best_solutions.tolist()
         solutions = ga_instance.solutions
+        solutions_fitness = ga_instance.solutions_fitness
         
         for i in range(len(best_solutions)):
             ga_instance.logger.info("Best parameters for generation {generation_num}: {solution}".format(generation_num=i, solution=best_solutions[i]))
         
         for i in range(len(solutions)):
-            ga_instance.logger.info("Solution {solution_num} from generation {generation_num}: {solution}".format(generation_num=i//sol_per_pop, solution_num=i%sol_per_pop, solution=solutions[i]))
+            ga_instance.logger.info("Solution {solution_num} from generation {generation_num}: {solution}".format(generation_num=i//sol_per_pop, solution_num=(i+1)%sol_per_pop, solution=solutions[i]))
+            ga_instance.logger.info("Fitness {solution_num} from generation {generation_num}: {solution}".format(generation_num=i//sol_per_pop, solution_num=(i+1)%sol_per_pop, solution=solutions_fitness[i]))
         
         logger.handlers.clear()
         
