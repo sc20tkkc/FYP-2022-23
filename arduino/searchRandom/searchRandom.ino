@@ -32,26 +32,31 @@ enum class State : uint8_t
 //   directionRight,
 // };
 
+// Thresholds for transition conditions
+const uint16_t thresholdFound = 4;
+const uint16_t thresholdLost = 2;
+const uint16_t thresholdRam = 4;
+const uint16_t thresholdVeer = 2;
+const uint16_t thresholdSwerve = 2;
+
 // Arguements determined by the simulation GA can be granularised
-const uint16_t reverseSpeed = 200;
-const uint16_t turnSpeed = 200;
-const uint16_t forwardSpeed = 200;
-const uint16_t veerSpeedLow = 0;
-const uint16_t veerSpeedHigh = 250;
-const uint16_t rammingSpeed = 400;
+const uint16_t speedSearchSpin = 200;
+const uint16_t speedSearchDrive = 200;
+const uint16_t speedRecover = -200;
+const uint16_t speedAttack = 300;
+const uint16_t speedVeerLow = 290;
+const uint16_t speedVeerHigh = 310;
+const uint16_t speedRam = 390;
+const uint16_t speedSwerveLow = 380;
+const uint16_t speedSwerveHigh = 400;
+
 
 // Timings that can be determined by simulation
-const uint16_t reverseTime = 200;
-const uint16_t scanTimeMin = 200;
-const uint16_t scanTimeMax = 2100;
-const uint16_t waitTime = 5000;
-const uint16_t stalemateTime = 4000;
-const uint16_t spinTimeMin = 100;
-const uint16_t spinTimeMax = 1000;
-
-// Can consider transition values such 
-//const uint8_t distanceCharge
-//const uint8_t disntace...
+const uint16_t timeStalemate = 800;
+const uint16_t timeSpinMin = 1000;
+const uint16_t timeSpinMax = 2000;
+const uint16_t timeRecover = 750;
+const uint16_t timeWait = 5000;
 
 // Set initial state
 State state = State::statePause;
@@ -61,7 +66,7 @@ bool initialLoop;
 bool displayCleared;
 
 // Initilaise random spin time
-uint16_t spinTime = random(spinTimeMin, spinTimeMax);
+uint16_t spinTime = random(timeSpinMin, timeSpinMax);
 
 // Direction robot should look if losing track of enemy
 // Direction scanDir = directionLeft;
@@ -110,9 +115,9 @@ void loop()
       motors.setSpeeds(0,0);
       uint16_t time = timeInState();
 
-      if (time < waitTime)
+      if (time < timeWait)
       {
-        uint16_t timeLeft = waitTime - time;
+        uint16_t timeLeft = timeWait - time;
         display.gotoXY(0, 0);
         display.print(timeLeft / 1000 % 10);
         display.print('.');
@@ -133,12 +138,14 @@ void loop()
         display.print(F("Recover"));
       }
 
-      motors.setSpeeds(-reverseSpeed, -reverseSpeed);
+      motors.setSpeeds(speedRecover, speedRecover);
 
-      if (timeInState() >= reverseTime);
+      if (timeInState() >= timeRecover)
       {
         switchState(State::stateSearch);
       }
+
+
       break;
     }
 
@@ -146,7 +153,8 @@ void loop()
     {
       if(initialLoop)
       {
-        spinTime = random(spinTimeMin, spinTimeMax);
+        spinTime = random(timeSpinMin, timeSpinMax);
+        spinTime = 1000;
         initialLoop = false;
         display.print(F("Search"));
       }
@@ -159,26 +167,26 @@ void loop()
       }
 
       proxSensors.read();
-      if (proxSensors.countsFrontWithLeftLeds() >= 2
-        || proxSensors.countsFrontWithRightLeds() >= 2)
+      if (proxSensors.countsFrontWithLeftLeds() >= thresholdFound
+        || proxSensors.countsFrontWithRightLeds() >= thresholdFound)
       {
         switchState(State::stateAttack);
       }
 
       if(timeInState() >= spinTime)
       {
-        motors.setSpeeds(forwardSpeed, forwardSpeed);
+        motors.setSpeeds(speedSearchDrive, speedSearchDrive);
       }
       else
       {
         // Randomise the direction
-        if(spinTime%2)
+        if(spinTime % 2)
         {
-          motors.setSpeeds(turnSpeed, -turnSpeed);
+          motors.setSpeeds(speedSearchSpin, -speedSearchSpin);
         }
         else
         {
-          motors.setSpeeds(-turnSpeed, turnSpeed);
+          motors.setSpeeds(-speedSearchSpin, speedSearchSpin);
         }
 
       }
@@ -204,27 +212,38 @@ void loop()
       uint8_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
       int8_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
       
-      if (sum >= 4 || timeInState() > stalemateTime)
+      if (sum >= thresholdRam || timeInState() > timeStalemate)
       {
-        motors.setSpeeds(rammingSpeed, rammingSpeed);
+        if (diff >= thresholdSwerve)
+        {
+          motors.setSpeeds(speedVeerHigh, speedVeerLow);
+        }
+        else if (diff <= -thresholdSwerve)
+        {
+          motors.setSpeeds(speedVeerLow, speedVeerHigh);
+        }
+        else
+        {
+          motors.setSpeeds(speedRam, speedRam);
+        }
       }
-      else if (sum == 0)
+      else if (sum <= thresholdLost)
       {
         switchState(State::stateSearch);
       }
       else
       {
-        if (diff >= 1)
+        if (diff >= thresholdVeer)
         {
-          motors.setSpeeds(veerSpeedHigh, veerSpeedLow);
+          motors.setSpeeds(speedSwerveHigh, speedSwerveLow);
         }
-        else if (diff <= -1)
+        else if (diff <= -thresholdVeer)
         {
-          motors.setSpeeds(veerSpeedLow, veerSpeedHigh);
+          motors.setSpeeds(speedSwerveLow, speedSwerveHigh);
         }
         else
         {
-          motors.setSpeeds(forwardSpeed, forwardSpeed);
+          motors.setSpeeds(speedAttack, speedAttack);
         }
       }
       break;
