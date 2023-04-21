@@ -200,7 +200,7 @@ class WorldManager:
         
 def run_round(solution):
     started = 0
-    while (world_manager.get_count_rounds() < 8:
+    while (world_manager.get_count_rounds() < 8):
         if started == 0:
             started = 1
             world_manager.start(solution)
@@ -310,7 +310,7 @@ def physical_to_simulation(solution):
 # Used to call the robot control system when each solution is passed
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
-    fitness = np.sum(stats * stat_weights)
+    fitness = np.sum(stats * stat_weights) 
     # ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
     world_manager.reset_stats()
     return fitness
