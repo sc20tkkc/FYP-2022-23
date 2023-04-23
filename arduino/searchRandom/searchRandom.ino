@@ -62,7 +62,6 @@ State state = State::statePause;
 
 // Variable to keep track of whether it is the first time in a state when needed
 bool initialLoop;
-bool displayCleared;
 
 // Initilaise random spin time
 uint16_t spinTime = random(timeSpinMin, timeSpinMax);
@@ -268,10 +267,4 @@ void switchState(State newState)
   stateStartTime = millis();
   initialLoop = true;
   display.clear();
-  displayCleared = true;
-}
-
-void displayUpdated()
-{
-  displayCleared = false;
 }
