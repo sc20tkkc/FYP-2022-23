@@ -13,15 +13,13 @@ unsigned int lineSensorValues[3];
 const uint16_t lineSensorThreshold = 1000;
 
 
-// Enumerate classes 
+// Enumerate states 
 enum class State : uint8_t
 {
   statePause,
   stateWait,
   stateSearch,
   stateAttack,
-  // stateDrive,
-  // stateDefend,
   stateRecover,
 };
 
@@ -39,7 +37,7 @@ const int16_t thresholdRam = 6;
 const int16_t thresholdVeer = 4;
 const int16_t thresholdSwerve = 4;
 
-// Arguements determined by the simulation GA can be granularised
+// Speeds that define the behaviour of the robot in each state
 const int16_t speedSearchSpin = 200;
 const int16_t speedSearchDrive = 200;
 const int16_t speedRecover = -200;
@@ -208,8 +206,8 @@ void loop()
 
       proxSensors.read();
       int16_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
-      int16_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
-      Serial.println(diff);
+      int16_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds()
+      
       if (sum <= thresholdLost)
       {
         switchState(State::stateSearch);
@@ -238,7 +236,6 @@ void loop()
           motors.setSpeeds(speedVeerHigh, speedVeerLow);
           searchDirection = Direction::directionRight;
         }
-        Serial.println(diff <= -thresholdVeer);
         if (diff <= -thresholdVeer)
         {
           motors.setSpeeds(speedVeerLow, speedVeerHigh);
