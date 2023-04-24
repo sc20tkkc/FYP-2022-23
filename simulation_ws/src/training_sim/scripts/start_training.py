@@ -311,23 +311,22 @@ def physical_to_simulation(solution):
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights) 
-    # ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
+    ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
     world_manager.reset_stats()
     return fitness
 
 # Define variables used in the genetic algorithm
 fitness_function = fitness_func
-num_generations = 100 # Number of generations.
+num_generations = 200 # Number of generations.
 num_parents_mating = 8 # Number of solutions to be selected as parents in the mating pool.
 sol_per_pop = 20 # Number of solutions in the population.
 num_genes = 20 # Hard coded to allign with the length of gene_space
 parent_selection_type = "sss"
-keep_parents = 2
-# keep_elitism = 0
+keep_parents = 4
 crossover_type = "two_points"
 crossover_probability=0.7
 mutation_type = "random"
-mutation_percent_genes = 10
+mutation_percent_genes = 5
 last_fitness = 0
 save_best_solutions=True
 save_solutions=True
