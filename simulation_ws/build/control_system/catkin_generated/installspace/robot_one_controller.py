@@ -13,52 +13,66 @@ import smach_ros
 from math import radians
 import random
 import time
+import sys
+import json
 
 initial_loop = True
 state_start_time = time.time()
 
-# Temporary variables used to define strcuture of state machine
+# Initialise all the values passed through by the genetic algorithm
+# There has to be a better way to do this
+args = sys.argv[1:]
+args = json.loads(args[0])
+
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 70
+threshold_line = 190
 
 # Values decided by the simulation
+# Thresholds that act affect state transitions
+threshold_proximity_found = args[9]
+threshold_proximity_lost = args[8]
+threshold_proximity_ram = args[15]
+threshold_proximity_veer = args[11]
+threshold_proximity_swerve = args[17]
+
 # Predfined times that are determined by the simulation
-threshold_proximity_found = 1
-threshold_proximity_lost = 2
-threshold_proximity_ram = 4
-time_stalemate = 3000
-time_spin_min = 1000
-time_spin_max = 2000
-time_recover = 1000
+time_stalemate = args[14]
+time_spin_min = args[6]
+time_spin_max = args[7]
+time_recover = args[1]
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
-speed_search_left.angular.z = -radians(270)
+speed_search_left.angular.z = -args[4]
 speed_search_right = Twist()
-speed_search_right.angular.z = radians(270)
+speed_search_right.angular.z = args[4]
 
 speed_search_drive = Twist()
-speed_search_drive.linear.x = -0.2
+speed_search_drive.linear.x = -args[3]
 
 speed_recover = Twist()
-speed_recover.linear.x = 0.2
+speed_recover.linear.x = -args[0]
+
+speed_attack= Twist()
+speed_attack.linear.x = -args[10]
 
 speed_veer_left = Twist()
-speed_veer_left.linear.x = -0.2
-speed_veer_left.angular.z = -radians(180)
+speed_veer_left.linear.x = -args[12]
+speed_veer_left.angular.z = -args[13]
 speed_veer_right = Twist()
-speed_veer_right.linear.x = -0.2
-speed_veer_right.angular.z = radians(180)
+speed_veer_right.linear.x = -args[12]
+speed_veer_right.angular.z = args[13]
 
 speed_ram = Twist()
-speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
+speed_ram.linear.x = -args[16]
+
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -args[18]
+speed_swerve_left.angular.z = -args[19]
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -args[18]
+speed_swerve_right.angular.z = args[19]
 
 speed_stop = Twist()
 speed_stop.linear.x = 0.0
@@ -67,7 +81,6 @@ speed_stop.angular.z = 0.0
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
 # Seperate classes and instances for each seperate actuator and sensor to mimic arduino implementation
-
 class LineSensor:
     def __init__(self):
         # Queue size set to 1 as values too large cause a build up due to invoking sleep during certain points of actuation
@@ -144,10 +157,10 @@ class ProxSensor:
     def get_data(self):
         return([self.val_left, self.val_midleft, self.val_midright, self.val_right])
     
-    def get_sum(self):
+    def get_sum_mid(self):
         return self.val_midleft + self.val_midright
 
-    def get_diff(self):
+    def get_diff_mid(self):
         return self.val_midleft - self.val_midright
     
 class Motors:
@@ -184,7 +197,10 @@ class Search(smach.State):
 
         if initial_loop:
             initial_loop = False
-            self.spin_time = random.randint(time_spin_min, time_spin_max)
+            if time_spin_min < time_spin_max:
+                self.spin_time = random.randint(time_spin_min, time_spin_max)
+            else:
+                self.spin_time = random.randint(time_spin_max, time_spin_min)
             self.spin_dir = random.randint(0, 1)
 
 
@@ -251,17 +267,17 @@ class AttackMain(smach.State):
         if initial_loop:
             initial_loop = False
             
-        if(prox_sensor.get_diff() >= 1):
+        if(prox_sensor.get_diff_mid() >= 1):
             motor.set_speed(speed_veer_left)
-        elif(prox_sensor.get_diff() <= -1):
+        elif(prox_sensor.get_diff_mid() <= -1):
             motor.set_speed(speed_veer_right)
         else:
-            motor.set_speed(speed_search_drive)
+            motor.set_speed(speed_attack)
 
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() < 2:  # Enemy no longer in sight
             reset_globals()
             return 'line'
-        elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
+        elif prox_sensor.get_sum_mid() > threshold_proximity_ram or time_in_state() > time_stalemate:
             reset_globals()
             return 'stalemate'
         # Checks readings of front two proximity sensors against threshold valuess
@@ -284,14 +300,14 @@ class AttackCharge(smach.State):
             initial_loop = False
         
         
-        if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_ram_left)
-        elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_ram_right)
+        if(prox_sensor.get_diff_mid() >= 1):
+            motor.set_speed(speed_swerve_left)
+        elif(prox_sensor.get_diff_mid() <= -1):
+            motor.set_speed(speed_swerve_right)
         else:
             motor.set_speed(speed_ram)
         
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() < 2:  # Enemy no longer in sight
             reset_globals()
             return 'line'
         elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
@@ -371,7 +387,6 @@ if __name__ == '__main__':
         prox_sensor = ProxSensor()
         motor = Motors()
         main()
-        # rospy.spin()
     except rospy.ROSInterruptException:
         pass
     

@@ -161,6 +161,7 @@ include_directories(
    scripts/referee.py
    scripts/training_ga.py
    scripts/world_manager.py
+   scripts/start_training.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

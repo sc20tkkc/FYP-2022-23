@@ -8,61 +8,80 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan, Range, Image
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Empty
-import smach
-import smach_ros
 from math import radians
 import random
 import time
+import sys
+import json
+from enum import unique, Enum
 
 initial_loop = True
 state_start_time = time.time()
 
-# Temporary variables used to define strcuture of state machine
+# Initialise all the values passed through by the genetic algorithm
+# There has to be a better way to do this
+args = sys.argv[1:]
+args = json.loads(args[0])
+
 # Hard coded values used to mimic robot's behaviour 
 # May need to be re-evaluatated skipping abrupt changes in speed causes unusual behaviour
-threshold_line = 70
+threshold_line = 190
 
 # Values decided by the simulation
+# Thresholds that act affect state transitions
+threshold_proximity_found = args[9]
+threshold_proximity_lost = args[8]
+threshold_proximity_ram = args[15]
+threshold_proximity_veer = args[11]
+threshold_proximity_swerve = args[17]
+
 # Predfined times that are determined by the simulation
-threshold_proximity_found = 1
-threshold_proximity_lost = 2
-threshold_proximity_ram = 4
-time_stalemate = 3000
-time_spin_min = 1000
-time_spin_max = 2000
-time_recover = 1000
+time_stalemate = args[14]
+time_spin_min = args[6]
+time_spin_max = args[7]
+time_recover = args[1]
 
 # Predefined speeds that are determined by the simulation
 speed_search_left = Twist()
-speed_search_left.angular.z = -radians(270)
+speed_search_left.angular.z = -args[4]
 speed_search_right = Twist()
-speed_search_right.angular.z = radians(270)
+speed_search_right.angular.z = args[4]
 
 speed_search_drive = Twist()
-speed_search_drive.linear.x = -0.2
+speed_search_drive.linear.x = -args[2]
 
 speed_recover = Twist()
-speed_recover.linear.x = 0.2
+speed_recover.linear.x = -args[0]
+
+speed_attack= Twist()
+speed_attack.linear.x = -args[10]
 
 speed_veer_left = Twist()
-speed_veer_left.linear.x = -0.2
-speed_veer_left.angular.z = -radians(180)
+speed_veer_left.linear.x = -args[12]
+speed_veer_left.angular.z = -args[13]
 speed_veer_right = Twist()
-speed_veer_right.linear.x = -0.2
-speed_veer_right.angular.z = radians(180)
+speed_veer_right.linear.x = -args[12]
+speed_veer_right.angular.z = args[13]
 
 speed_ram = Twist()
-speed_ram.linear.x = -0.5
-speed_ram_left = Twist()
-speed_ram_left.linear.x = -0.5
-speed_ram_left.angular.z = -radians(180)
-speed_ram_right = Twist()
-speed_ram_right.linear.x = -0.5
-speed_ram_right.angular.z = radians(180)
+speed_ram.linear.x = -args[16]
 
-speed_stop = Twist()
-speed_stop.linear.x = 0.0
-speed_stop.angular.z = 0.0
+speed_swerve_left = Twist()
+speed_swerve_left.linear.x = -args[18]
+speed_swerve_left.angular.z = -args[19]
+speed_swerve_right = Twist()
+speed_swerve_right.linear.x = -args[18]
+speed_swerve_right.angular.z = args[19]
+
+
+# Define and initialise state
+@unique
+class States(Enum):
+    SEARCH = 0
+    RECOVER = 1
+    ATTACK = 2
+    
+state = States.SEARCH
 
 
 # Defining subscriber and publishers for corresponding sensors and actuators respectively
@@ -144,10 +163,10 @@ class ProxSensor:
     def get_data(self):
         return([self.val_left, self.val_midleft, self.val_midright, self.val_right])
     
-    def get_sum(self):
+    def get_sum_mid(self):
         return self.val_midleft + self.val_midright
 
-    def get_diff(self):
+    def get_diff_mid(self):
         return self.val_midleft - self.val_midright
     
 class Motors:
@@ -168,210 +187,109 @@ def reset_globals():
 
 # Return the time spent in the state in milliseconds
 def time_in_state():
-    return (time.time() - state_start_time) * 1000
+    return (time.time() - state_start_time) * 1000    
 
+def loop():
+    global state
+    while not rospy.is_shutdown():
+        if (state == States.SEARCH):
+            search_random()
+        elif (state == States.RECOVER):
+            recover()
+        elif (state == States.ATTACK):
+            attack()
 
-# define state Search
-class Search(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['line','proximity','loop'])
-        self.spin_time = 0
-        self.spin_dir = 0
-
-    def execute(self, userdata):
-        rospy.loginfo('Executing state Search')
-        global initial_loop
-
+def search_random():
+    global initial_loop
+    global state
+    global spin_time
+    global spin_dir
+    
+    # If any of the line sensors come back with 1 meaning a line has been found
+    if line_sensor.get_data().count(1):
+        reset_globals()
+        state = States.RECOVER
+    # If either front proximity sensor value has reached the threshold the enemy has been found 
+    elif prox_sensor.get_data()[1] >= threshold_proximity_found or prox_sensor.get_data()[2] >= threshold_proximity_found:
+        reset_globals()
+        state = States.ATTACK
+    else:
         if initial_loop:
             initial_loop = False
-            self.spin_time = random.randint(time_spin_min, time_spin_max)
-            self.spin_dir = random.randint(0, 1)
-
-
-        if(time_in_state() <= self.spin_time):
-            if self.spin_dir:
+            # Since variable are randomised time_spin_min can be more than time_spin_max which can lead to errors
+            if time_spin_min < time_spin_max:
+                spin_time = random.randint(time_spin_min, time_spin_max)
+            else:
+                spin_time = random.randint(time_spin_max, time_spin_min)
+            spin_dir = random.randint(0, 1)
+            
+        if(time_in_state() <= spin_time):
+            if spin_dir:
                 motor.set_speed(speed_search_left)
             else:
                 motor.set_speed(speed_search_right)
         else:
             motor.set_speed(speed_search_drive)
 
-         # If any of the line sensors come back with 1 meaning a line has been found
-        if line_sensor.get_data().count(1):
-            reset_globals()
-            return 'line'
-        elif prox_sensor.get_data()[1] >= threshold_proximity_found or prox_sensor.get_data()[2] >= threshold_proximity_found:
-            reset_globals()
-            return 'proximity'
-        else: 
-            return 'loop'
-        
-        
-# define state RecoverReverse
-class Recover(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['recover_finished', 'loop'])
 
-    def execute(self, userdata):
-        rospy.loginfo('Executing state Recover')
+def recover():
+    global initial_loop
+    global state
+    
+    if initial_loop:
+        initial_loop = False
+
+    motor.set_speed(speed_recover)
+
+    if(time_in_state() >= time_recover):
+        reset_globals()
+        state = States.SEARCH
+
+def attack():
         global initial_loop
+        global state
 
-        if initial_loop:
-            initial_loop = False
-
-        motor.set_speed(speed_recover)
-
-        rospy.loginfo(time_in_state())
-        rospy.loginfo(time_recover)
-        if(time_in_state() <= time_recover):
-            return 'loop'
-        else:
+        if line_sensor.get_data().count(1) and prox_sensor.get_sum_mid() <= threshold_proximity_lost:  # Enemy no longer in sight
             reset_globals()
-            return 'recover_finished'
-
-
-# # define state RecoverRotate
-# class RecoverRotate(smach.State):
-#     def __init__(self):
-#         smach.State.__init__(self, outcomes=['rotate_finished'])
-
-#     def execute(self, userdata):
-#         rospy.loginfo('Executing state RecoverRotate')
-#         return 'rotate_finished'
-
-
-# define state AttackMain
-class AttackMain(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'stalemate', 'line'])
-
-    def execute(self, userdata):
-        global initial_loop
-        
-        if initial_loop:
-            initial_loop = False
+            state = States.RECOVER
             
-        if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_veer_left)
-        elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_veer_right)
-        else:
-            motor.set_speed(speed_search_drive)
-
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
-            reset_globals()
-            return 'line'
-        elif prox_sensor.get_sum() > threshold_proximity_ram or time_in_state() > time_stalemate:
-            reset_globals()
-            return 'stalemate'
         # Checks readings of front two proximity sensors against threshold valuess
-        elif prox_sensor.get_data()[1] < threshold_proximity_lost or prox_sensor.get_data()[2] < threshold_proximity_lost:
+        elif prox_sensor.get_sum_mid() <= threshold_proximity_lost :
             reset_globals()
-            return 'enemy_lost'
+            state = States.SEARCH
+            
         else:
-            return 'loop'
-        
-
-# define state AttackCharge
-class AttackCharge(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['loop', 'enemy_lost', 'line'])
-
-    def execute(self, userdata):
-        global initial_loop
-        
-        if initial_loop:
-            initial_loop = False
-        
-        
-        if(prox_sensor.get_diff() >= 1):
-            motor.set_speed(speed_ram_left)
-        elif(prox_sensor.get_diff() <= -1):
-            motor.set_speed(speed_ram_right)
-        else:
-            motor.set_speed(speed_ram)
-        
-        if line_sensor.get_data().count(1) and prox_sensor.get_sum() < 2:
-            reset_globals()
-            return 'line'
-        elif prox_sensor.get_data()[1] <= threshold_proximity_lost or prox_sensor.get_data()[2] <= threshold_proximity_lost:
-            reset_globals()
-            return 'enemy_lost'
-        else:
-            return 'loop'
-
-def shutdown():
-    motor.set_speed(speed_stop)
-    rospy.sleep(1)  
-
-def main():
-    rospy.on_shutdown(shutdown)
-    
-    sm_main = smach.StateMachine(outcomes=['terminate'])
-    
-    # Open the container
-    with sm_main:
-
-        smach.StateMachine.add('SEARCH', Search(),
-                               transitions={'line':'RECOVER', 
-                                            'proximity':'ATTACK', 
-                                            'loop':'SEARCH'})
-        
-        smach.StateMachine.add('RECOVER', Recover(),
-                               transitions={'recover_finished':'SEARCH',
-                                            'loop':'RECOVER'})
-
-        # # Create the sub RECOVER
-        # sm_recover = smach.StateMachine(outcomes=['recover_finished'])
-
-        # # Open the container
-        # with sm_recover:
-
-        #     # Add states to the container
-        #     smach.StateMachine.add('RECOVER_REVERSE', RecoverRerverse(), 
-        #                            transitions={'reverse_finished':'RECOVER_ROTATE'})
-        #     smach.StateMachine.add('RECOVER_ROTATE', RecoverRotate(), 
-        #                            transitions={'rotate_finished':'recover_finished'})
-
-        # smach.StateMachine.add('RECOVER', sm_recover,
-        #                        transitions={'recover_finished':'SEARCH'})
-        
-        
-        # Create the sub ATTACK
-        sm_attack = smach.StateMachine(outcomes=['attack_finished_lost', 'attack_finished_line', None])
-
-        # Open the container
-        with sm_attack:
-
-            # Add states to the container
-            smach.StateMachine.add('ATTACK_MAIN', AttackMain(), 
-                                   transitions={'stalemate':'ATTACK_CHARGE',
-                                                'enemy_lost':'attack_finished_lost',
-                                                'line': 'attack_finished_line',
-                                                'loop':'ATTACK_MAIN',})
-            smach.StateMachine.add('ATTACK_CHARGE', AttackCharge(), 
-                                   transitions={'enemy_lost':'attack_finished_lost',
-                                                'line': 'attack_finished_line',
-                                                'loop':'ATTACK_CHARGE'})
-
-        smach.StateMachine.add('ATTACK', sm_attack,
-                               transitions={'attack_finished_lost':'SEARCH',
-                                            'attack_finished_line':'RECOVER',
-                                            None:'terminate'})
-
-    # Execute SMACH plan
-    outcome = sm_main.execute()
-
+            if initial_loop:
+                initial_loop = False
+            
+            if prox_sensor.get_sum_mid() > threshold_proximity_ram or time_in_state() > time_stalemate:
+                if(prox_sensor.get_diff_mid() >= threshold_proximity_swerve):
+                    motor.set_speed(speed_swerve_left)
+                
+                elif(prox_sensor.get_diff_mid() <= -threshold_proximity_swerve):
+                    motor.set_speed(speed_swerve_right)
+                else:
+                    motor.set_speed(speed_ram)
+                    
+            else:
+                if(prox_sensor.get_diff_mid() >= threshold_proximity_veer):
+                    motor.set_speed(speed_veer_left)
+                    
+                elif(prox_sensor.get_diff_mid() <= -threshold_proximity_veer):
+                    motor.set_speed(speed_veer_right)
+                    
+                else:
+                    motor.set_speed(speed_attack)
 
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('state_machine_controller', anonymous=True)
+        rospy.init_node('robot_one_controller')
         line_sensor = LineSensor()
         prox_sensor = ProxSensor()
         motor = Motors()
-        main()
-        # rospy.spin()
+        loop()
+        
     except rospy.ROSInterruptException:
         pass
     
