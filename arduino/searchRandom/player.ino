@@ -31,28 +31,28 @@ enum class Direction : uint8_t
 };
 
 // Thresholds for transition conditions
-const int16_t thresholdFound = 2;
-const int16_t thresholdLost = 0;
-const int16_t thresholdRam = 6;
-const int16_t thresholdVeer = 4;
-const int16_t thresholdSwerve = 4;
+const int16_t thresholdFound = 1;
+const int16_t thresholdLost = 3;
+const int16_t thresholdRam = 2;
+const int16_t thresholdVeer = 2;
+const int16_t thresholdSwerve = 3;
 
 // Speeds that define the behaviour of the robot in each state
-const int16_t speedSearchSpin = 200;
-const int16_t speedSearchDrive = 200;
-const int16_t speedRecover = -200;
-const int16_t speedAttack = 100;
-const int16_t speedVeerLow = 0;
-const int16_t speedVeerHigh = 100;
-const int16_t speedRam = 400;
-const int16_t speedSwerveLow = 0;
-const int16_t speedSwerveHigh = 400;
+const int16_t speedSearchSpin = 327;
+const int16_t speedSearchDrive = 362;
+const int16_t speedRecover = -64;
+const int16_t speedAttack = 321;
+const int16_t speedVeerLow = 199;
+const int16_t speedVeerHigh = 298;
+const int16_t speedRam = 213;
+const int16_t speedSwerveLow = 38;
+const int16_t speedSwerveHigh = 234;
 
 // Timings that can be determined by simulation
-const uint16_t timeStalemate = 2000;
-const uint16_t timeSpinMin = 1000;
-const uint16_t timeSpinMax = 2000;
-const uint16_t timeRecover = 750;
+const uint16_t timeStalemate = 1696;
+const uint16_t timeSpinMin = 2881;
+const uint16_t timeSpinMax = 3394;
+const uint16_t timeRecover = 3745;
 const uint16_t timeWait = 5000;
 
 // Set initial state
@@ -150,7 +150,6 @@ void loop()
       if(initialLoop)
       {
         spinTime = random(timeSpinMin, timeSpinMax);
-        spinTime = 1000;
         initialLoop = false;
         display.print(F("Search"));
       }
