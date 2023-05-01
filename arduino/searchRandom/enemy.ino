@@ -205,13 +205,13 @@ void loop()
 
       proxSensors.read();
       int16_t sum = proxSensors.countsFrontWithRightLeds() + proxSensors.countsFrontWithLeftLeds();
-      int16_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds()
+      int16_t diff = proxSensors.countsFrontWithRightLeds() - proxSensors.countsFrontWithLeftLeds();
       
-      if (sum <= thresholdLost)
-      {
-        switchState(State::stateSearch);
-      }
-      else if (timeInState() >= timeStalemate || sum >= thresholdRam) 
+      // if (sum <= thresholdLost)
+      // {
+      //   switchState(State::stateSearch);
+      // }
+      if (timeInState() >= timeStalemate || sum >= thresholdRam) 
       {
         if (diff >= thresholdSwerve)
         {
