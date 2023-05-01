@@ -311,7 +311,7 @@ def physical_to_simulation(solution):
 def fitness_func(ga_instance, solution, solution_idx):
     stats = np.array(run_round(solution))
     fitness = np.sum(stats * stat_weights) 
-    ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
+    # ga_instance.logger.info("Fitness for {solution} = {fitness}".format(fitness=fitness, solution=solution.tolist()))
     world_manager.reset_stats()
     return fitness
 
