@@ -81,6 +81,7 @@ class LineSensor:
         self.sub_right = rospy.Subscriber("/robot2/camera_right/rgb/image_raw", Image, callback=self.sensor_callback_right, queue_size=1)
     
     # Normalise the line sensor data to conform values expected from the real life robot
+    # Code originally developed by Jaymeson Heller https://github.com/JDaug1326/project
     def normalise_line(self, data: Image):
         total_data = 0
         datas = 0
@@ -118,6 +119,7 @@ class ProxSensor:
         self.sub_right = rospy.Subscriber("/robot2/prox/right_range_sensor", LaserScan, callback=self.sensor_callback_right, queue_size=1)
 
     # Normalise the proximity sensor data to conform values expected from the real life robot
+    # Code originally developed by Jaymeson Heller https://github.com/JDaug1326/project
     def normalise_prox(self,data: LaserScan):
         total_ran = 0
         rans = 0
